@@ -1,3 +1,5 @@
+const suits = ["Clubs", "Diamonds", "Spades", "Hearts"];
+
 /* Character class to store references to document's div elements:
 #health-counter, #health-bar. Each character is generated with an alive = true status
 and a maxHealth property, taken from #health-counter's innerText when object first created.
@@ -44,10 +46,35 @@ class Player extends Character {
     // Cards in the play area, might relocate to listener function.
     this.playedCards = [];
   }
+
+  /* Function to recursively add cards to player's hand. Suit and card number is randomly generated,
+  so card can be any of the 4 suits and any of the 13 numbers (10 + 3 specials).
+  Card numbers stored as 2 digits (01 to 13) so that last 2 chars of string can be referenced.
+  This simulates drawing from a deck of infinite poker cards.
+  */
+  draw(amt) {
+    if (amt <= 0) {
+      return;
+    }
+    // Randomize suit.
+    let card = suits[Math.round(Math.random() * 4) - 1];
+    // Randomize card number.
+    const numb = Math.round(Math.random() * 13);
+    if (numb < 10) {
+      // Ensures 2 digit card numbers.
+      card += 0;
+    }
+    // Concatenate to suit string.
+    card += numb;
+    // Add card to Player hand.
+    this.hand.push(card);
+    // Recurse
+    this.draw(amt - 1);
+  }
 }
 
 // Human player Character object
-const humanPlayer = new Character(
+const humanPlayer = new Player(
   document.querySelector("#player-health-bar"),
   document.querySelector("#player-health-counter")
 );
