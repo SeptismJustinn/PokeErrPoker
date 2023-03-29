@@ -57,9 +57,11 @@ class Player extends Character {
       return;
     }
     // Randomize suit.
-    let card = suits[Math.round(Math.random() * 4) - 1];
+    let card = suits[Math.ceil(Math.random() * 4) - 1];
+
     // Randomize card number.
-    const numb = Math.round(Math.random() * 13);
+    const numb = Math.ceil(Math.random() * 13);
+    console.log(numb);
     if (numb < 10) {
       // Ensures 2 digit card numbers.
       card += 0;
@@ -67,6 +69,7 @@ class Player extends Character {
     // Concatenate to suit string.
     card += numb;
     // Add card to Player hand.
+    console.log(card);
     this.hand.push(card);
     // Recurse
     this.draw(amt - 1);
