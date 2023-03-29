@@ -45,7 +45,7 @@ h2 {
 #computer-health-bar,
 #computer-health-counter {
   grid-area: 2/3/3/4;
-  width: 20%;
+  width: 100%;
 }
 
 #computer-health-counter {
