@@ -1,3 +1,5 @@
+// ----- Global/Initial variables -----
+
 /* Suits based off classic elements
 "e" for Earth suit, "f" for Fire suit, "s" for Storm or air suit, "w" for Water suit.
 */
@@ -5,10 +7,43 @@ const suits = ["e", "f", "s", "w"];
 // Cards being played for this round. Up to 5 cards played per round.
 const playedCards = [];
 
+// --- Elements to listen to ---
+// - Play area cards -
+const area1 = document.querySelector("#area-one");
+const area2 = document.querySelector("#area-two");
+const area3 = document.querySelector("#area-thr");
+const area4 = document.querySelector("#area-fou");
+const area5 = document.querySelector("#area-fiv");
+// - Player hand cards -
+const card1 = document.querySelector("#card-one");
+const card2 = document.querySelector("#card-two");
+const card3 = document.querySelector("#card-thr");
+const card4 = document.querySelector("#card-fou");
+const card5 = document.querySelector("#card-fiv");
+const card6 = document.querySelector("#card-six");
+const card7 = document.querySelector("#card-sev");
+const card8 = document.querySelector("#card-eig");
+const card9 = document.querySelector("#card-nin");
+const card0 = document.querySelector("#card-ten");
+
 function initialize() {
   playedCards = [];
+  const areaCards = [area1, area2, area3, area4, area5];
+  const playerHandCards = [
+    card1,
+    card2,
+    card3,
+    card4,
+    card5,
+    card6,
+    card7,
+    card8,
+    card9,
+    card0,
+  ];
 }
 
+// ----- Classes -----
 /* Character class to store references to document's div elements:
 #health-counter, #health-bar. Each character is generated with an alive = true status
 and a maxHealth property, taken from #health-counter's innerText when object first created.
@@ -83,23 +118,7 @@ class Player extends Character {
   }
 }
 
-// Function to be passed through playedCards.sort();
-function cardSort(card1, card2) {
-  if (card1.charAt(0) === card2.charAt(0)) {
-    // If same suit, sort by number value.
-    return Number(card1.slice(1)) - Number(card2.slice(1));
-  } else {
-    // If different suits,
-    if (card1.charAt(0) < card2.charAt(0)) {
-      // Return -1 to indicate that card1's suit is alphabetically smaller.
-      return -1;
-    } else {
-      // Return 1 if card1's suit is alphabetically larger.
-      return 1;
-    }
-  }
-}
-
+// --- Class Objects ---
 // Human player Character object
 const humanPlayer = new Player(
   document.querySelector("#player-health-bar"),
@@ -111,3 +130,24 @@ const computerPlayer = new Character(
   document.querySelector("#computer-health-bar"),
   document.querySelector("#player-health-counter")
 );
+
+// ----- Functions -----
+
+// Function to be passed through playedCards.sort();
+function cardSort(cardone, cardtwo) {
+  if (cardone.charAt(0) === cardtwo.charAt(0)) {
+    // If same suit, sort by number value.
+    return Number(cardone.slice(1)) - Number(cardtwo.slice(1));
+  } else {
+    // If different suits,
+    if (cardone.charAt(0) < cardtwo.charAt(0)) {
+      // Return -1 to indicate that cardone's suit is alphabetically smaller.
+      return -1;
+    } else {
+      // Return 1 if cardone's suit is alphabetically larger.
+      return 1;
+    }
+  }
+}
+
+// ----- Event Listening -----
