@@ -4,17 +4,20 @@
 "e" for Earth suit, "f" for Fire suit, "s" for Storm or air suit, "w" for Water suit.
 */
 const suits = ["e", "f", "s", "w"];
+const suitsClasses = ["earth", "fire", "storm", "water"];
 // Cards being played for this round. Up to 5 cards played per round.
 const playedCards = [];
 
 // --- Elements to listen to ---
-// - Play area cards -
+//#region - Play area cards (area1-5) -
 const area1 = document.querySelector("#area-one");
 const area2 = document.querySelector("#area-two");
 const area3 = document.querySelector("#area-thr");
 const area4 = document.querySelector("#area-fou");
 const area5 = document.querySelector("#area-fiv");
-// - Player hand cards -
+//#endregion
+
+//#region - Player hand cards (card1-0) -
 const card1 = document.querySelector("#card-one");
 const card2 = document.querySelector("#card-two");
 const card3 = document.querySelector("#card-thr");
@@ -25,11 +28,16 @@ const card7 = document.querySelector("#card-sev");
 const card8 = document.querySelector("#card-eig");
 const card9 = document.querySelector("#card-nin");
 const card0 = document.querySelector("#card-ten");
+//#endregion
 
 function initialize() {
   playedCards = [];
-  const areaCards = [area1, area2, area3, area4, area5];
-  const playerHandCards = [
+  const allCards = [
+    area1,
+    area2,
+    area3,
+    area4,
+    area5,
     card1,
     card2,
     card3,
@@ -41,6 +49,15 @@ function initialize() {
     card9,
     card0,
   ];
+
+  // Reset all cards to inactive, remove numbers and suit elements.
+  for (const cardElement of allCards) {
+    cardElement.innerHTML = "";
+    cardElement.classList.add("inactive-card");
+    for (const cardSuit of suitsClasses) {
+      cardElement.classList.remove(cardSuit);
+    }
+  }
 }
 
 // ----- Classes -----
