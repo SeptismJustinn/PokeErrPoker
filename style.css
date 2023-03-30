@@ -58,7 +58,7 @@ h2 {
 
 .player-controlled {
   display: grid;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   width: 600px;
   height: 100px;
   margin: 0 auto;
@@ -67,38 +67,66 @@ h2 {
 
 .game-state-button,
 .player-hand-button {
-  width: 46px;
+  width: 40px;
   height: 16px;
   font-size: 8px;
   text-align: center;
   margin: 1px auto;
+  cursor: pointer;
 }
 
 .game-state-controls {
   grid-column: 1/2;
   display: grid;
-  grid-template-rows: 60px 20px 20px;
+  grid-template-rows: 5px 50px 20px 20px 5px;
   align-items: center;
+  background-color: brown;
+  border-radius: 5px 0 0 5px;
 }
 
 #start-button {
-  grid-row: 2/3;
+  grid-row: 3/4;
 }
 
 #restart-button {
-  grid-row: 3/4;
+  grid-row: 4/5;
 }
 
 .player-hand-controls {
   grid-column: 3/4;
   display: grid;
-  grid-template-rows: 20px 20px 20px 40px;
+  grid-template-rows: 5px 20px 20px 20px 30px 5px;
   align-items: center;
+  border-radius: 0 5px 5px 0;
+  background-color: goldenrod;
+}
+
+#accept-move-button {
+  grid-row: 2/3;
+}
+
+#return-move-button {
+  grid-row: 3/4;
+}
+
+#sort-hand-button {
+  grid-row: 4/5;
 }
 
 .player-hand {
   grid-column: 2/3;
-  border: 1px solid black;
   display: grid;
   grid-template-columns: repeat(10, 50px);
+  justify-items: center;
+  align-items: center;
+  background-color: burlywood;
+}
+
+.player-hand-card {
+  border: 1px solid black;
+  border-radius: 5px;
+  height: 60px;
+  width: 40px;
+  font-size: 20px;
+  text-align: center;
 }
