@@ -56,11 +56,13 @@ class Player extends Character {
     if (amt <= 0) {
       return;
     }
-    // Randomize suit.
-    let card = suits[Math.ceil(Math.random() * 4) - 1];
+    // Randomize suit, generates 0 to 3.99...96, floored to 0 to 3.
+    let card = suits[Math.floor(Math.random() * 4)];
 
-    // Randomize card number.
-    const numb = Math.ceil(Math.random() * 13);
+    /* Randomize card number, generates 0 to 11.99...988, 
+       ceiling'd to 0 to 12, incremented to 1 to 13.
+    */
+    const numb = Math.floor(Math.random() * 12) + 1;
     console.log(numb);
     if (numb < 10) {
       // Ensures 2 digit card numbers.
