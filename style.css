@@ -1,4 +1,4 @@
-/* REMINDER! Ignore borders when styling, unless borders are to be left in. */
+/* REMINDER! Remove borders when styling, unless borders are to be left in. */
 h2 {
   margin: 0 auto;
   text-align: center;
@@ -8,7 +8,7 @@ h2 {
   display: grid;
   width: 600px;
   margin: 10px auto;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   grid-template-columns: 150px 300px 150px;
   grid-template-rows: 140px 10px;
 }
@@ -18,8 +18,11 @@ h2 {
 }
 
 .play-area {
-  border: 1px solid red;
+  /* border: 1px solid red; */
   grid-area: 1/2/3/3;
+  display: grid;
+  grid-template-columns: 25px 50px 50px 50px 50px 50px 25px;
+  align-items: center;
 }
 
 .health-bar {
@@ -32,19 +35,34 @@ h2 {
   z-index: 1;
   font-size: 7px;
   text-align: center;
+  margin: auto;
   /* background-color: white;
-  margin: auto ;
   border: 1px solid black; */
 }
 
 #player-health-bar,
-#player-health-counter {
+#player-health-counter,
+#player-health-bar-border {
   grid-area: 2/1/3/2;
 }
 
+#player-health-bar {
+  width: 100%;
+}
+
+#player-health-bar-border,
+#computer-health-bar-border {
+  z-index: 1;
+  border: 1px solid black;
+}
+
 #computer-health-bar,
-#computer-health-counter {
+#computer-health-counter,
+#computer-health-bar-border {
   grid-area: 2/3/3/4;
+}
+
+#computer-health-bar {
   width: 100%;
 }
 
@@ -122,11 +140,24 @@ h2 {
   background-color: burlywood;
 }
 
-.player-hand-card {
+.player-hand-card,
+.play-area-card,
+.inactive-card {
   border: 1px solid black;
   border-radius: 5px;
   height: 60px;
   width: 40px;
   font-size: 20px;
   text-align: center;
+  cursor: pointer;
+}
+
+#area-one {
+  grid-column: 2/3;
+}
+
+.inactive-card {
+  border-color: rgba(0, 0, 0, 0);
+  background-color: rgba(100, 100, 100, 0.2);
+  color: rgba(0, 0, 0, 0);
 }

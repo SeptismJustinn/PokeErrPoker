@@ -11,12 +11,20 @@
     <h2>Poke Err</h2>
     <div class="game-space">
       <div class="char-area" id="player-area"></div>
-      <div class="play-area"></div>
+      <div class="play-area">
+        <div class="inactive-card play-area-card" id="area-one">A</div>
+        <div class="inactive-card play-area-card" id="area-two">10</div>
+        <div class="inactive-card play-area-card" id="area-thr">J</div>
+        <div class="inactive-card play-area-card" id="area-fou">Q</div>
+        <div class="inactive-card play-area-card" id="area-fiv">K</div>
+      </div>
       <div class="char-area" id="computer-area"></div>
       <div class="health-counter" id="player-health-counter">100</div>
       <div class="health-bar" id="player-health-bar"></div>
+      <div class="health-bar-border" id="player-health-bar-border"></div>
       <div class="health-counter" id="computer-health-counter">400</div>
       <div class="health-bar" id="computer-health-bar"></div>
+      <div class="health-bar-border" id="computer-health-bar-border"></div>
     </div>
     <div class="player-controlled">
       <div class="game-state-controls">
@@ -24,16 +32,16 @@
         <button class="game-state-button" id="restart-button">Restart</button>
       </div>
       <div class="player-hand">
-        <div class="player-hand-card" id="card-one">1</div>
-        <div class="player-hand-card" id="card-two">2</div>
-        <div class="player-hand-card" id="card-thr">3</div>
-        <div class="player-hand-card" id="card-fou">4</div>
-        <div class="player-hand-card" id="card-fiv">5</div>
-        <div class="player-hand-card" id="card-six">6</div>
-        <div class="player-hand-card" id="card-sev">7</div>
-        <div class="player-hand-card" id="card-eig">8</div>
-        <div class="player-hand-card" id="card-nin">9</div>
-        <div class="player-hand-card" id="card-ten">10</div>
+        <div class="player-hand-card" id="card-one">A</div>
+        <div class="inactive-card player-hand-card" id="card-two">2</div>
+        <div class="inactive-card player-hand-card" id="card-thr">3</div>
+        <div class="inactive-card player-hand-card" id="card-fou">4</div>
+        <div class="inactive-card player-hand-card" id="card-fiv">5</div>
+        <div class="inactive-card player-hand-card" id="card-six">6</div>
+        <div class="inactive-card player-hand-card" id="card-sev">7</div>
+        <div class="inactive-card player-hand-card" id="card-eig">8</div>
+        <div class="inactive-card player-hand-card" id="card-nin">9</div>
+        <div class="inactive-card player-hand-card" id="card-ten">10</div>
       </div>
       <div class="player-hand-controls">
         <button class="player-hand-button" id="accept-move-button">
