@@ -65,15 +65,40 @@ h2 {
   grid-template-columns: 50px 500px 50px;
 }
 
+.game-state-button,
+.player-hand-button {
+  width: 46px;
+  height: 16px;
+  font-size: 8px;
+  text-align: center;
+  margin: 1px auto;
+}
+
 .game-state-controls {
   grid-column: 1/2;
+  display: grid;
+  grid-template-rows: 60px 20px 20px;
+  align-items: center;
+}
+
+#start-button {
+  grid-row: 2/3;
+}
+
+#restart-button {
+  grid-row: 3/4;
 }
 
 .player-hand-controls {
   grid-column: 3/4;
+  display: grid;
+  grid-template-rows: 20px 20px 20px 40px;
+  align-items: center;
 }
 
 .player-hand {
   grid-column: 2/3;
   border: 1px solid black;
+  display: grid;
+  grid-template-columns: repeat(10, 50px);
 }
