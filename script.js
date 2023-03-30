@@ -1,5 +1,13 @@
-// "F" for fire suit, "W" for water suit, "E" for Earth suit and "S" for storm/wind suit.
-const suits = ["F", "W", "E", "S"];
+/* Suits based off classic elements
+"e" for Earth suit, "f" for Fire suit, "s" for Storm or air suit, "w" for Water suit.
+*/
+const suits = ["e", "f", "s", "w"];
+// Cards being played for this round. Up to 5 cards played per round.
+const playedCards = [];
+
+function initialize() {
+  playedCards = [];
+}
 
 /* Character class to store references to document's div elements:
 #health-counter, #health-bar. Each character is generated with an alive = true status
@@ -44,8 +52,6 @@ class Player extends Character {
     super(healthBar, healthCounter);
     // Player's current hand.
     this.hand = [];
-    // Cards in the play area, might relocate to listener function.
-    this.playedCards = [];
   }
 
   /* Function to recursively add cards to player's hand. Suit and card number is randomly generated,
@@ -74,6 +80,23 @@ class Player extends Character {
     this.hand.push(card);
     // Recurse
     this.draw(amt - 1);
+  }
+}
+
+// Function to be passed through playedCards.sort();
+function cardSort(card1, card2) {
+  if (card1.charAt(0) === card2.charAt(0)) {
+    // If same suit, sort by number value.
+    return Number(card1.slice(1)) - Number(card2.slice(1));
+  } else {
+    // If different suits,
+    if (card1.charAt(0) < card2.charAt(0)) {
+      // Return -1 to indicate that card1's suit is alphabetically smaller.
+      return -1;
+    } else {
+      // Return 1 if card1's suit is alphabetically larger.
+      return 1;
+    }
   }
 }
 
