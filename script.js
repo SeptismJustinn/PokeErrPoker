@@ -62,7 +62,7 @@ class Player extends Character {
     /* Randomize card number, generates 0 to 11.99...988, 
        ceiling'd to 0 to 12, incremented to 1 to 13.
     */
-    const numb = Math.floor(Math.random() * 12) + 1;
+    const numb = Math.floor(Math.random() * 13) + 1;
     console.log(numb);
     if (numb < 10) {
       // Ensures 2 digit card numbers.
