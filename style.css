@@ -4,25 +4,54 @@ h2 {
   text-align: center;
 }
 
-.game-space {
+#game-space {
   display: grid;
   width: 600px;
+  height: 150px;
   margin: 10px auto;
   /* border: 1px solid black; */
-  grid-template-columns: 150px 300px 150px;
-  grid-template-rows: 140px 10px;
+  grid-template-columns: 25% 50% 25%;
+  grid-template-rows: 94% 6%;
 }
 
 .char-area {
-  border: 1px solid blue;
+  background-color: aliceblue;
 }
 
-.play-area {
-  /* border: 1px solid red; */
+#info-space {
   grid-area: 1/2/3/3;
+  display: grid;
+  grid-template-rows: 100px 50px;
+}
+
+#play-area {
+  /* border: 1px solid red; */
   display: grid;
   grid-template-columns: 25px 50px 50px 50px 50px 50px 25px;
   align-items: center;
+  justify-items: center;
+}
+
+#turn-info {
+  display: grid;
+  grid-template-columns: 130px 40px 130px;
+  align-items: center;
+  justify-items: center;
+}
+
+.play-text {
+  font-size: 14px;
+  margin: auto 2px;
+}
+
+#played-move {
+  display: flex;
+  justify-self: end;
+}
+
+#computer-move {
+  display: flex;
+  justify-self: start;
 }
 
 .health-bar {
@@ -150,14 +179,40 @@ h2 {
   font-size: 20px;
   text-align: center;
   cursor: pointer;
+  background-color: white;
 }
 
 #area-one {
   grid-column: 2/3;
 }
 
+.earth {
+  background-image: url("yellow.png");
+  background-repeat: no-repeat;
+  background-position: 50% 80%;
+}
+
+.fire {
+  background-image: url("red.png");
+  background-repeat: no-repeat;
+  background-position: 50% 80%;
+}
+
+.storm {
+  background-image: url("green.png");
+  background-repeat: no-repeat;
+  background-position: 50% 80%;
+}
+
+.water {
+  background-image: url("blue.png");
+  background-repeat: no-repeat;
+  background-position: 50% 80%;
+}
+
 .inactive-card {
   border-color: rgba(0, 0, 0, 0);
   background-color: rgba(100, 100, 100, 0.2);
   color: rgba(0, 0, 0, 0);
+  background-image: none;
 }
