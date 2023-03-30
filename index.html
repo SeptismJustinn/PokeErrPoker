@@ -9,14 +9,28 @@
   </head>
   <body>
     <h2>Poke Err</h2>
-    <div class="game-space">
+    <div id="game-space">
       <div class="char-area" id="player-area"></div>
-      <div class="play-area">
-        <div class="inactive-card play-area-card" id="area-one"></div>
-        <div class="inactive-card play-area-card" id="area-two"></div>
-        <div class="inactive-card play-area-card" id="area-thr"></div>
-        <div class="inactive-card play-area-card" id="area-fou"></div>
-        <div class="inactive-card play-area-card" id="area-fiv"></div>
+      <div id="info-space">
+        <div id="play-area">
+          <div class="play-area-card water" id="area-one">A</div>
+          <div class="play-area-card storm" id="area-two">J</div>
+          <div class="inactive-card play-area-card" id="area-thr"></div>
+          <div class="play-area-card fire" id="area-fou">10</div>
+          <div class="play-area-card earth" id="area-fiv">3</div>
+        </div>
+        <div id="turn-info">
+          <div id="played-move">
+            <div class="inactive-info play-text" id="played-hand">R</div>
+            <div class="inactive-info play-text" id="played-value">40</div>
+            <div class="inactive-info play-text" id="player-turn">Damage</div>
+          </div>
+          <div class="inactive-info" id="versus">VS</div>
+          <div id="computer-move">
+            <div class="inactive-info play-text" id="computer-value">40</div>
+            <div class="inactive-info play-text" id="computer-turn">Block</div>
+          </div>
+        </div>
       </div>
       <div class="char-area" id="computer-area"></div>
       <div class="health-counter" id="player-health-counter">100</div>
@@ -32,10 +46,10 @@
         <button class="game-state-button" id="restart-button">Restart</button>
       </div>
       <div class="player-hand">
-        <div class="inactive-card player-hand-card" id="card-one"></div>
-        <div class="inactive-card player-hand-card" id="card-two"></div>
-        <div class="inactive-card player-hand-card" id="card-thr"></div>
-        <div class="inactive-card player-hand-card" id="card-fou"></div>
+        <div class="player-hand-card earth" id="card-one">A</div>
+        <div class="player-hand-card fire" id="card-two">4</div>
+        <div class="player-hand-card storm" id="card-thr">9</div>
+        <div class="player-hand-card water" id="card-fou">10</div>
         <div class="inactive-card player-hand-card" id="card-fiv"></div>
         <div class="inactive-card player-hand-card" id="card-six"></div>
         <div class="inactive-card player-hand-card" id="card-sev"></div>
