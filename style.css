@@ -53,13 +53,22 @@ h2 {
   justify-self: start;
 }
 
+.inactive-info {
+  color: rgb(0, 0, 0, 0);
+}
+
 .health-bar {
   background-color: greenyellow;
   max-width: 150px;
 }
 
+.damage-bar {
+  background-color: red;
+  max-width: 150px;
+}
+
 .health-counter {
-  z-index: 1;
+  z-index: 2;
   font-size: 7px;
   text-align: center;
   margin: auto;
@@ -67,27 +76,39 @@ h2 {
 
 #player-health-bar,
 #player-health-counter,
-#player-health-bar-border {
+#player-health-bar-border,
+#player-health-damage {
   grid-area: 2/1/3/2;
 }
 
 #player-health-bar {
   width: 100%;
+  z-index: 1;
+}
+
+#player-health-damage {
+  width: 100%;
 }
 
 #player-health-bar-border,
 #computer-health-bar-border {
-  z-index: 1;
+  z-index: 2;
   border: 1px solid black;
 }
 
 #computer-health-bar,
 #computer-health-counter,
-#computer-health-bar-border {
+#computer-health-bar-border,
+#computer-health-damage {
   grid-area: 2/3/3/4;
 }
 
 #computer-health-bar {
+  width: 100%;
+  z-index: 1;
+}
+
+#computer-health-damage {
   width: 100%;
 }
 
