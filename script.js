@@ -17,40 +17,46 @@ const area2 = document.querySelector("#area-two");
 const area3 = document.querySelector("#area-thr");
 const area4 = document.querySelector("#area-fou");
 const area5 = document.querySelector("#area-fiv");
+const areaCards = [area1, area2, area3, area4, area5];
 //#endregion
 
 //#region - Player hand cards (card1-0) -
-const card1 = document.querySelector("#card-one");
-const card2 = document.querySelector("#card-two");
-const card3 = document.querySelector("#card-thr");
-const card4 = document.querySelector("#card-fou");
-const card5 = document.querySelector("#card-fiv");
-const card6 = document.querySelector("#card-six");
-const card7 = document.querySelector("#card-sev");
-const card8 = document.querySelector("#card-eig");
-const card9 = document.querySelector("#card-nin");
-const card0 = document.querySelector("#card-ten");
+const card0 = document.querySelector("#card-one");
+const card1 = document.querySelector("#card-two");
+const card2 = document.querySelector("#card-thr");
+const card3 = document.querySelector("#card-fou");
+const card4 = document.querySelector("#card-fiv");
+const card5 = document.querySelector("#card-six");
+const card6 = document.querySelector("#card-sev");
+const card7 = document.querySelector("#card-eig");
+const card8 = document.querySelector("#card-nin");
+const card9 = document.querySelector("#card-ten");
+const cardHand = [
+  card0,
+  card1,
+  card2,
+  card3,
+  card4,
+  card5,
+  card6,
+  card7,
+  card8,
+  card9,
+  card0,
+];
 //#endregion
 
+// - Buttons -
+const startButton = document.querySelector("#start-button");
+const restartButton = document.querySelector("#restart-button");
+const acceptButton = document.querySelector("#accept-move-button");
+const returnButton = document.querySelector("#return-move-button");
+const sortButton = document.querySelector("#sort-hand-button");
+
 function initialize() {
-  playedCards = [];
-  const allCards = [
-    area1,
-    area2,
-    area3,
-    area4,
-    area5,
-    card1,
-    card2,
-    card3,
-    card4,
-    card5,
-    card6,
-    card7,
-    card8,
-    card9,
-    card0,
-  ];
+  playedCards.splice(0);
+  const allCards = [];
+  allCards.push(...areaCards, ...cardHand);
 
   // Reset all cards to inactive, remove numbers and suit elements.
   for (const cardElement of allCards) {
@@ -178,4 +184,22 @@ function cardSort(cardone, cardtwo) {
   }
 }
 
+// Function to update card element with card string.
+function updateCard(cardEle, cardStr) {
+  switch (cardStr.charAt(0)) {
+    case "e":
+      break;
+    case "f":
+      break;
+    case "s":
+      break;
+    case "w":
+      break;
+  }
+}
+
 // ----- Event Listening -----
+startButton.addEventListener("click", (pointer) => {
+  initialize();
+  humanPlayer.draw(10);
+});
