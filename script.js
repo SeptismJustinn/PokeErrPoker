@@ -7,6 +7,8 @@ const suits = ["e", "f", "s", "w"];
 const suitsClasses = ["earth", "fire", "storm", "water"];
 // Cards being played for this round. Up to 5 cards played per round.
 const playedCards = [];
+// Turn alternates between 0: player turn > 1: between > 2: Computer turn > 1 > 0 and so on.
+let turn = 0;
 
 // --- Elements to listen to ---
 //#region - Play area cards (area1-5) -
@@ -66,11 +68,13 @@ function initialize() {
 and a maxHealth property, taken from #health-counter's innerText when object first created.
  */
 class Character {
-  constructor(healthBar, healthCounter) {
+  constructor(healthBar, healthCounter, damageBar) {
     // Store .health-bar div element.
     this.healthBar = healthBar;
     // Store .health-counter div element.
     this.healthCounter = healthCounter;
+    // Store .damage-bar div element.
+    this.damageBar = damageBar;
     // Stores initial health as max health as characters should be generated with full health.
     this.maxHealth = Number(this.healthCounter.innerText);
     // Each character generated as alive.
@@ -93,6 +97,11 @@ class Character {
       this.alive = false;
       // Insert ded function?
     }
+  }
+
+  // Method to update damage bar and hide it behind health bar.
+  updateDamage() {
+    this.damageBar.style.width = this.healthBar.style.width;
   }
 }
 
@@ -139,13 +148,15 @@ class Player extends Character {
 // Human player Character object
 const humanPlayer = new Player(
   document.querySelector("#player-health-bar"),
-  document.querySelector("#player-health-counter")
+  document.querySelector("#player-health-counter"),
+  document.querySelector("#player-damage-bar")
 );
 
 // Computer Character object
 const computerPlayer = new Character(
   document.querySelector("#computer-health-bar"),
-  document.querySelector("#player-health-counter")
+  document.querySelector("#player-health-counter"),
+  document.querySelector("#computer-damage-bar")
 );
 
 // ----- Functions -----
