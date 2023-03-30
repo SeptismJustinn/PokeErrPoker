@@ -9,7 +9,6 @@ h2 {
   width: 600px;
   height: 150px;
   margin: 10px auto;
-  /* border: 1px solid black; */
   grid-template-columns: 25% 50% 25%;
   grid-template-rows: 94% 6%;
 }
@@ -21,18 +20,17 @@ h2 {
 #info-space {
   grid-area: 1/2/3/3;
   display: grid;
-  grid-template-rows: 100px 50px;
+  grid-template-rows: 100px 25px 25px;
 }
 
 #play-area {
-  /* border: 1px solid red; */
   display: grid;
   grid-template-columns: 25px 50px 50px 50px 50px 50px 25px;
   align-items: center;
   justify-items: center;
 }
 
-#turn-info {
+#damage-info {
   display: grid;
   grid-template-columns: 130px 40px 130px;
   align-items: center;
@@ -42,6 +40,7 @@ h2 {
 .play-text {
   font-size: 14px;
   margin: auto 2px;
+  text-align: center;
 }
 
 #played-move {
@@ -56,7 +55,6 @@ h2 {
 
 .health-bar {
   background-color: greenyellow;
-  /* border: 1px solid black; */
   max-width: 150px;
 }
 
@@ -65,8 +63,6 @@ h2 {
   font-size: 7px;
   text-align: center;
   margin: auto;
-  /* background-color: white;
-  border: 1px solid black; */
 }
 
 #player-health-bar,
@@ -105,7 +101,6 @@ h2 {
 
 .player-controlled {
   display: grid;
-  /* border: 1px solid black; */
   width: 600px;
   height: 100px;
   margin: 0 auto;
