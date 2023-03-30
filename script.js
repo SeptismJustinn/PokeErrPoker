@@ -1,4 +1,5 @@
-const suits = ["Clubs", "Diamonds", "Spades", "Hearts"];
+// "F" for fire suit, "W" for water suit, "E" for Earth suit and "S" for storm/wind suit.
+const suits = ["F", "W", "E", "S"];
 
 /* Character class to store references to document's div elements:
 #health-counter, #health-bar. Each character is generated with an alive = true status
@@ -63,7 +64,6 @@ class Player extends Character {
        ceiling'd to 0 to 12, incremented to 1 to 13.
     */
     const numb = Math.floor(Math.random() * 13) + 1;
-    console.log(numb);
     if (numb < 10) {
       // Ensures 2 digit card numbers.
       card += 0;
@@ -71,7 +71,6 @@ class Player extends Character {
     // Concatenate to suit string.
     card += numb;
     // Add card to Player hand.
-    console.log(card);
     this.hand.push(card);
     // Recurse
     this.draw(amt - 1);
