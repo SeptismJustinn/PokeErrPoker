@@ -1,9 +1,4 @@
 /* REMINDER! Remove borders when styling, unless borders are to be left in. */
-h2 {
-  margin: 0 auto;
-  text-align: center;
-}
-
 #game-space {
   display: grid;
   width: 600px;
