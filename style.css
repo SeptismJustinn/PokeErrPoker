@@ -1,42 +1,65 @@
 /* REMINDER! Remove borders when styling, unless borders are to be left in. */
+body {
+  max-width: 1200px;
+  max-height: 720px;
+  margin: 0 auto;
+}
+
 #game-space {
   display: grid;
-  width: 600px;
-  height: 150px;
-  margin: 10px auto;
+  width: 1200px;
+  height: 500px;
+  margin: 20px auto;
   grid-template-columns: 25% 50% 25%;
-  grid-template-rows: 94% 6%;
+  grid-template-rows: 92% 8%;
 }
 
 .char-area {
   background-color: aliceblue;
   text-align: center;
+  font-size: 50px;
+  font-weight: bold;
 }
 
 #info-space {
   grid-area: 1/2/3/3;
   display: grid;
-  grid-template-rows: 100px 25px 25px;
+  grid-template-rows: 50% 25% 25%;
 }
 
 #play-area {
   display: grid;
-  grid-template-columns: 25px 50px 50px 50px 50px 50px 25px;
+  grid-template-columns: 10% 16% 16% 16% 16% 16% 10%;
   align-items: center;
   justify-items: center;
 }
 
 #damage-info {
   display: grid;
-  grid-template-columns: 130px 40px 130px;
+  grid-template-columns: 45% 10% 45%;
   align-items: center;
   justify-items: center;
 }
 
 .play-text {
-  font-size: 14px;
-  margin: auto 2px;
+  font-size: 40px;
+  margin: auto 10px;
   text-align: center;
+}
+
+.damage-text {
+  background-color: rgb(255, 200, 200);
+  color: darkred;
+}
+
+.block-text {
+  background-color: rgb(200, 200, 255);
+  color: darkblue;
+}
+
+#versus {
+  font-size: 40px;
+  font-weight: bold;
 }
 
 #played-move {
@@ -55,17 +78,17 @@
 
 .health-bar {
   background-color: greenyellow;
-  max-width: 150px;
+  max-width: 100%;
 }
 
 .damage-bar {
   background-color: red;
-  max-width: 150px;
+  max-width: 100%;
 }
 
 .health-counter {
   z-index: 2;
-  font-size: 7px;
+  font-size: 24px;
   text-align: center;
   margin: auto;
 }
@@ -89,7 +112,7 @@
 #player-health-bar-border,
 #computer-health-bar-border {
   z-index: 2;
-  border: 1px solid black;
+  border: 2px solid black;
 }
 
 #computer-health-bar,
@@ -118,29 +141,29 @@
 
 .player-controlled {
   display: grid;
-  width: 600px;
-  height: 100px;
+  width: 1200px;
+  height: 200px;
   margin: 0 auto;
-  grid-template-columns: 50px 500px 50px;
+  grid-template-columns: 10% 80% 10%;
 }
 
 .game-state-button,
 .player-hand-button {
-  width: 40px;
-  height: 16px;
-  font-size: 8px;
+  width: 80%;
+  height: 80%;
+  font-size: 20px;
   text-align: center;
-  margin: 1px auto;
+  margin: 5px auto;
   cursor: pointer;
 }
 
 .game-state-controls {
   grid-column: 1/2;
   display: grid;
-  grid-template-rows: 5px 50px 20px 20px 5px;
+  grid-template-rows: 5% 50% 20% 20% 5%;
   align-items: center;
   background-color: brown;
-  border-radius: 5px 0 0 5px;
+  border-radius: 20px 0 0 20px;
 }
 
 #start-button {
@@ -154,9 +177,9 @@
 .player-hand-controls {
   grid-column: 3/4;
   display: grid;
-  grid-template-rows: 5px 20px 20px 20px 30px 5px;
+  grid-template-rows: 5% 20% 20% 20% 30% 5%;
   align-items: center;
-  border-radius: 0 5px 5px 0;
+  border-radius: 0 20px 20px 0;
   background-color: goldenrod;
 }
 
@@ -175,7 +198,7 @@
 .player-hand {
   grid-column: 2/3;
   display: grid;
-  grid-template-columns: repeat(10, 50px);
+  grid-template-columns: repeat(10, 10%);
   justify-items: center;
   align-items: center;
   background-color: burlywood;
@@ -184,14 +207,16 @@
 .player-hand-card,
 .play-area-card,
 .inactive-card {
-  border: 1px solid black;
+  border: 2px solid black;
   border-radius: 5px;
-  height: 60px;
-  width: 40px;
-  font-size: 20px;
+  height: 120px;
+  width: 80px;
+  font-size: 40px;
   text-align: center;
   cursor: pointer;
   background-color: white;
+  background-repeat: no-repeat;
+  background-position: 50% 70%;
 }
 
 #area-one {
@@ -200,26 +225,18 @@
 
 .earth {
   background-image: url("yellow.png");
-  background-repeat: no-repeat;
-  background-position: 50% 80%;
 }
 
 .fire {
   background-image: url("red.png");
-  background-repeat: no-repeat;
-  background-position: 50% 80%;
 }
 
 .storm {
   background-image: url("green.png");
-  background-repeat: no-repeat;
-  background-position: 50% 80%;
 }
 
 .water {
   background-image: url("blue.png");
-  background-repeat: no-repeat;
-  background-position: 50% 80%;
 }
 
 .inactive-card {
