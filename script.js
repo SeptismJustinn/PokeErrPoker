@@ -49,7 +49,7 @@ class CardElements {
     // Store array of cardElements
     this.cardArr = cardArr;
     // Empty array on construction to store played cards OR player hand
-    this.cards = [];
+    this.cards = ["", "", "", "", ""];
   }
 
   // Return cardElement according to index.
@@ -59,12 +59,23 @@ class CardElements {
 
   // Return cards length.
   getCardsLength() {
-    return this.cards.length;
+    let cardsLength = 0;
+    for (const card of this.cards) {
+      if (card !== "") {
+        cardsLength++;
+      }
+    }
+    return cardsLength;
   }
 
   // Add cardStr to cards array.
   pushCardStr(cardStr) {
-    this.cards.push(cardStr);
+    for (let i = 0; i < this.cards.length; i++) {
+      if (this.cards[i] === "") {
+        this.cards[i] = cardStr;
+        break;
+      }
+    }
   }
 
   // Function to update number on card.
@@ -192,6 +203,7 @@ class CardElements {
   // Prepare for new game.
   initialize() {
     this.cards.splice(0);
+    this.cards = ["", "", "", "", ""];
     // Reset all cards to inactive, remove numbers and suit elements.
     for (let i = 0; i < this.cardArr.length; i++) {
       this.updateCard(i);
@@ -199,63 +211,13 @@ class CardElements {
   }
 }
 
-/* Character class to store references to document's div elements:
-#health-counter, #health-bar. Each character is generated with an alive = true status
-and a maxHealth property, taken from #health-counter's innerText when object first created.
- */
-class Character {
-  constructor(healthBar, healthCounter, damageBar) {
-    // Store .health-bar div element.
-    this.healthBar = healthBar;
-    // Store .health-counter div element.
-    this.healthCounter = healthCounter;
-    // Store .damage-bar div element.
-    this.damageBar = damageBar;
-    // Stores initial health as max health as characters should be generated with full health.
-    this.maxHealth = Number(this.healthCounter.innerText);
-    // Each character generated as alive.
-    this.alive = true;
-  }
-
-  /* Method to update health of character by amt. Amt expected to be a positive or negative number.
-  If character's health is depleted, set health to 0 instead and deplete health bar.
-  */
-  updateHealth(amt) {
-    const currHealth = Number(this.healthCounter.innerText) + amt;
-    if (currHealth > 0) {
-      this.healthCounter.innerText = currHealth;
-      this.healthBar.style.width = `${Math.round(
-        (currHealth / this.maxHealth) * 100
-      )}%`;
-    } else {
-      this.healthCounter.innerText = 0;
-      this.healthBar.style.width = 0;
-      this.alive = false;
-      // Insert ded function?
-    }
-  }
-
-  // Method to update damage bar and hide it behind health bar.
-  updateDamage() {
-    this.damageBar.style.width = this.healthBar.style.width;
-  }
-
-  // Prepare for new game, reset char stats.
-  initialize() {
-    this.healthCounter.innerText = this.maxHealth;
-    this.healthBar.style.width = "100%";
-    this.alive = true;
-  }
-}
-
-/* Player subclass to encapsulate functions that only human players will use,
-such as drawing or playing cards.
+/* PlayerCardElements subclass to store references to player's card elements and possessed cards.
+Contains functions that interact with player cards' elements and the player hand array.
 */
-class Player extends Character {
-  constructor(healthBar, healthCounter, damageBar, deckRef) {
-    super(healthBar, healthCounter, damageBar);
-    // Reference to CardDeck class object that stores class elements.
-    this.deckRef = deckRef;
+class PlayerCardElements extends CardElements {
+  constructor(cardArr) {
+    super(cardArr);
+    this.cards = ["", "", "", "", "", "", "", "", "", ""];
   }
 
   updateCardEle() {
@@ -318,11 +280,54 @@ class Player extends Character {
     this.deckRef.cards.sort(this.#cardSort);
     this.updateCardEle();
   }
+}
 
-  // Prepare for new game. Also reset player's cards.
+/* Character class to store references to document's div elements:
+#health-counter, #health-bar. Each character is generated with an alive = true status
+and a maxHealth property, taken from #health-counter's innerText when object first created.
+ */
+class Character {
+  constructor(healthBar, healthCounter, damageBar) {
+    // Store .health-bar div element.
+    this.healthBar = healthBar;
+    // Store .health-counter div element.
+    this.healthCounter = healthCounter;
+    // Store .damage-bar div element.
+    this.damageBar = damageBar;
+    // Stores initial health as max health as characters should be generated with full health.
+    this.maxHealth = Number(this.healthCounter.innerText);
+    // Each character generated as alive.
+    this.alive = true;
+  }
+
+  /* Method to update health of character by amt. Amt expected to be a positive or negative number.
+  If character's health is depleted, set health to 0 instead and deplete health bar.
+  */
+  updateHealth(amt) {
+    const currHealth = Number(this.healthCounter.innerText) + amt;
+    if (currHealth > 0) {
+      this.healthCounter.innerText = currHealth;
+      this.healthBar.style.width = `${Math.round(
+        (currHealth / this.maxHealth) * 100
+      )}%`;
+    } else {
+      this.healthCounter.innerText = 0;
+      this.healthBar.style.width = 0;
+      this.alive = false;
+      // Insert ded function?
+    }
+  }
+
+  // Method to update damage bar and hide it behind health bar.
+  updateDamage() {
+    this.damageBar.style.width = this.healthBar.style.width;
+  }
+
+  // Prepare for new game, reset char stats.
   initialize() {
-    super.initialize();
-    this.deckRef.initialize();
+    this.healthCounter.innerText = this.maxHealth;
+    this.healthBar.style.width = "100%";
+    this.alive = true;
   }
 }
 
@@ -337,7 +342,7 @@ const areaElements = new CardElements([
 ]);
 
 // Cards in player's hand (0-9 for one-ten)
-const cardElements = new CardElements([
+const cardElements = new PlayerCardElements([
   document.querySelector("#card-one"),
   document.querySelector("#card-two"),
   document.querySelector("#card-thr"),
@@ -351,7 +356,7 @@ const cardElements = new CardElements([
 ]);
 
 // Human player Character object
-const humanPlayer = new Player(
+const humanPlayer = new Character(
   document.querySelector("#player-health-bar"),
   document.querySelector("#player-health-counter"),
   document.querySelector("#player-damage-bar"),
