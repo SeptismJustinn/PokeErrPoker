@@ -195,6 +195,10 @@ body {
   grid-row: 4/5;
 }
 
+button:disabled {
+  cursor: no-drop;
+}
+
 .player-hand {
   grid-column: 2/3;
   display: grid;
@@ -245,4 +249,5 @@ body {
   background-color: rgba(100, 100, 100, 0.2);
   color: rgba(0, 0, 0, 0);
   background-image: none;
+  cursor: context-menu;
 }
