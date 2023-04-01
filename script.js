@@ -30,6 +30,10 @@ const playerTurn = document.querySelector("#player-turn");
 const computerTurn = document.querySelector("#computer-turn");
 const versus = document.querySelector("#versus");
 
+// - Card Areas -
+const playArea = document.querySelector("#play-area");
+const handArea = document.querySelector("#player-hand");
+
 // Prepare for game start.
 function initialize() {
   playedCards.splice(0);
@@ -75,6 +79,8 @@ class CardElements {
         // Number
         cardEle.innerHTML = cardNum;
     }
+    // If assigned a number, a suit will have already been assigned, therefore card is active and should be draggable.
+    cardEle.draggable = true;
   }
 
   // Function to update card element with card string.
@@ -112,6 +118,8 @@ class CardElements {
         // Deactivate card
         ele.classList.add("inactive-card");
         ele.innerHTML = "";
+        // Make deactivated cards non-draggable.
+        ele.draggable = false;
     }
   }
 
@@ -383,9 +391,17 @@ function sortHand() {
 }
 
 // ----- Event Listening -----
+// --- Menu Buttons ---
 startButton.addEventListener("click", startGame, { once: true });
 restartButton.addEventListener("click", confirmRestart);
 acceptButton.addEventListener("click", progressTurn);
 // To-Do, have restart button pause return button functionality, to then use return button to revert from restartConfirm = true
 returnButton.addEventListener("click", returnCard);
 sortButton.addEventListener("click", sortHand);
+
+// --- Card Listeners ---
+// - Play Area -
+playArea.addEventListener();
+
+// - Player Hand Area -
+handArea.addEventListener();
