@@ -36,7 +36,7 @@ const handArea = document.querySelector("#player-hand");
 
 // Prepare for game start.
 function initialize() {
-  areaElements.initialize();
+  playElements.initialize();
   humanPlayer.initialize();
   computerPlayer.initialize();
 }
@@ -152,15 +152,13 @@ class CardElements {
   }
 
   // Function to sync card elements array with card string array
-  static syncCardStr(area, cardEleObj) {
-    const areaDivs = area.children;
-
+  syncCardStr() {
     let cardString;
     let cardClassList;
-    for (let i = 0; i < areaDivs.length; i++) {
-      cardClassList = areaDivs[i].classList;
+    for (let i = 0; i < this.cardArr.length; i++) {
+      cardClassList = this.cardArr[i].classList;
       if (cardClassList.contains("inactive-card")) {
-        cardEleObj.cards[i] = "";
+        this.cards[i] = "";
       } else {
         if (cardClassList.contains("earth")) {
           cardString = "e";
@@ -172,7 +170,7 @@ class CardElements {
           cardString = "w";
         }
 
-        switch (areaDivs[i].innerText) {
+        switch (this.cardArr[i].innerText) {
           case "A":
             cardString += "01";
             break;
@@ -189,9 +187,9 @@ class CardElements {
             cardString += "10";
             break;
           default:
-            cardString += `0${areaDivs[i].innerText}`;
+            cardString += `0${this.cardArr[i].innerText}`;
         }
-        cardEleObj.cards[i] = cardString;
+        this.cards[i] = cardString;
       }
     }
   }
@@ -221,8 +219,8 @@ class CardElements {
     fromEle.classList.add("inactive-card");
     fromEle.draggable = false;
 
-    CardElements.syncCardStr(playArea, areaElements);
-    CardElements.syncCardStr(handArea, pCardElements);
+    playElements.syncCardStr();
+    handElements.syncCardStr();
   }
 
   // Static function to swap two active cards
@@ -252,7 +250,8 @@ class CardElements {
       toEle.classList.add(fromSuit);
     }
 
-    CardElements.syncCardStr();
+    playElements.syncCardStr();
+    handElements.syncCardStr();
   }
 
   // Prepare for new game.
@@ -385,7 +384,7 @@ class Character {
 
 // --- Class Objects ---
 // Cards in the play area (0-4 for one-fiv)
-const areaElements = new CardElements([
+const playElements = new CardElements([
   document.querySelector("#area-one"),
   document.querySelector("#area-two"),
   document.querySelector("#area-thr"),
@@ -394,7 +393,7 @@ const areaElements = new CardElements([
 ]);
 
 // Cards in player's hand (0-9 for one-ten)
-const pCardElements = new PlayerCardElements([
+const handElements = new PlayerCardElements([
   document.querySelector("#card-one"),
   document.querySelector("#card-two"),
   document.querySelector("#card-thr"),
@@ -411,8 +410,7 @@ const pCardElements = new PlayerCardElements([
 const humanPlayer = new Character(
   document.querySelector("#player-health-bar"),
   document.querySelector("#player-health-counter"),
-  document.querySelector("#player-damage-bar"),
-  pCardElements
+  document.querySelector("#player-damage-bar")
 );
 
 // Computer Character object
@@ -428,7 +426,7 @@ const computerPlayer = new Character(
 function startGame() {
   initialize();
   setTimeout(() => {
-    pCardElements.draw(10);
+    handElements.draw(10);
     acceptButton.disabled = false;
     sortButton.disabled = false;
     restartButton.disabled = false;
@@ -471,7 +469,7 @@ function confirmRestart() {
     // Reset restartConfirm switch.
     restartConfirm = false;
     preRestartMessage = "";
-    if (areaElements.getCardsLength() < 1) {
+    if (playElements.getCardsLength() < 1) {
       // Disabled return button if no cards have been played, as it should be in this case.
       returnButton.disabled = true;
     }
@@ -495,7 +493,7 @@ function cancelRestart() {
   playerTurn.classList.remove("inactive-info");
   computerValue.classList.remove("inactive-info");
   computerTurn.classList.remove("inactive-info");
-  if (areaElements.getCardsLength().length < 1) {
+  if (playElements.getCardsLength().length < 1) {
     // Disabled return button if no cards have been played, as it should be in this case.
     returnButton.disabled = true;
   }
@@ -509,7 +507,7 @@ function returnCard() {}
 
 // Sort button function to sort player hand.
 function sortHand() {
-  pCardElements.sort();
+  handElements.sort();
 }
 
 // --- Card Area Functions ---
