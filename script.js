@@ -100,7 +100,7 @@ class CardElements {
   }
 
   // Function to update card element with card string.
-  updateCard(cardInd, active = false) {
+  updateCardEle(cardInd, active = false) {
     const ele = this.cardArr[cardInd];
     const cardStr = active ? this.cards[cardInd] : "";
     for (const cardSuit of suitsClasses) {
@@ -140,19 +140,64 @@ class CardElements {
     }
   }
 
-  // Function to sync cards array with cardArr array.
+  // Function to sync card string array with card elements array.
   syncCardEle() {
     for (let i = 0; i < this.cards.length; i++) {
       if (this.cards[i] === "") {
-        this.updateCard(i);
+        this.updateCardEle(i);
       } else {
-        this.updateCard(i, true);
+        this.updateCardEle(i, true);
       }
     }
   }
 
-  // Function to transfer card from an active area to an inactive area
-  transferCard(fromEle, toEle) {
+  // Function to sync card elements array with card string array
+  static syncCardStr(area, cardEleObj) {
+    const areaDivs = area.children;
+
+    let cardString;
+    let cardClassList;
+    for (let i = 0; i < areaDivs.length; i++) {
+      cardClassList = areaDivs[i].classList;
+      if (cardClassList.contains("inactive-card")) {
+        cardEleObj.cards[i] = "";
+      } else {
+        if (cardClassList.contains("earth")) {
+          cardString = "e";
+        } else if (cardClassList.contains("fire")) {
+          cardString = "f";
+        } else if (cardClassList.contains("storm")) {
+          cardString = "s";
+        } else if (cardClassList.contains("water")) {
+          cardString = "w";
+        }
+
+        switch (areaDivs[i].innerText) {
+          case "A":
+            cardString += "01";
+            break;
+          case "J":
+            cardString += "11";
+            break;
+          case "Q":
+            cardString += "12";
+            break;
+          case "K":
+            cardString += "13";
+            break;
+          case "10":
+            cardString += "10";
+            break;
+          default:
+            cardString += `0${areaDivs[i].innerText}`;
+        }
+        cardEleObj.cards[i] = cardString;
+      }
+    }
+  }
+
+  // Static function to transfer card from an active area to an inactive area
+  static transferCard(fromEle, toEle) {
     // Add number to toEle
     toEle.innerText = fromEle.innerText;
     // Remove number from fromEle
@@ -175,10 +220,13 @@ class CardElements {
     // Deactivate fromEle
     fromEle.classList.add("inactive-card");
     fromEle.draggable = false;
+
+    CardElements.syncCardStr(playArea, areaElements);
+    CardElements.syncCardStr(handArea, pCardElements);
   }
 
-  // Function to swap two active cards
-  swapCard(fromEle, toEle) {
+  // Static function to swap two active cards
+  static swapCard(fromEle, toEle) {
     // Swap numbers
     const tempText = toEle.innerText;
     toEle.innerText = fromEle.innerText;
@@ -203,6 +251,8 @@ class CardElements {
       fromEle.classList.add(toSuit);
       toEle.classList.add(fromSuit);
     }
+
+    CardElements.syncCardStr();
   }
 
   // Prepare for new game.
@@ -210,7 +260,7 @@ class CardElements {
     this.cards = ["", "", "", "", ""];
     // Reset all cards to inactive, remove numbers and suit elements.
     for (let i = 0; i < this.cardArr.length; i++) {
-      this.updateCard(i);
+      this.updateCardEle(i);
     }
   }
 }
@@ -469,15 +519,18 @@ function dragStart(pointer) {
 
 function dragDrop(pointer) {
   pointer.preventDefault();
+  if (pointer.target === dragged) {
+    return;
+  }
   const targetList = pointer.target.classList;
   if (
     targetList.contains("play-area-card") ||
     targetList.contains("player-hand-card")
   ) {
-    if (pointer.target.classList.contains("inactive-card")) {
-      areaElements.transferCard(dragged, pointer.target);
+    if (targetList.contains("inactive-card")) {
+      CardElements.transferCard(dragged, pointer.target);
     } else {
-      areaElements.swapCard(dragged, pointer.target);
+      CardElements.swapCard(dragged, pointer.target);
     }
   }
 }
