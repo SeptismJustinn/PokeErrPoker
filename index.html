@@ -46,7 +46,9 @@
     <div class="player-controlled">
       <div class="game-state-controls">
         <button class="game-state-button" id="start-button">Start</button>
-        <button class="game-state-button" id="restart-button">Restart</button>
+        <button class="game-state-button" id="restart-button" disabled>
+          Restart
+        </button>
       </div>
       <div class="player-hand">
         <div class="inactive-card player-hand-card earth" id="card-one"></div>
@@ -61,13 +63,15 @@
         <div class="inactive-card player-hand-card" id="card-ten"></div>
       </div>
       <div class="player-hand-controls">
-        <button class="player-hand-button" id="accept-move-button">
+        <button class="player-hand-button" id="accept-move-button" disabled>
           Accept
         </button>
-        <button class="player-hand-button" id="return-move-button">
+        <button class="player-hand-button" id="return-move-button" disabled>
           Return
         </button>
-        <button class="player-hand-button" id="sort-hand-button">Sort</button>
+        <button class="player-hand-button" id="sort-hand-button" disabled>
+          Sort
+        </button>
       </div>
     </div>
     <script src="script.js"></script>

@@ -9,6 +9,8 @@ const suitsClasses = ["earth", "fire", "storm", "water"];
 const playedCards = [];
 // Turn alternates between 0: player turn > 1: between > 2: Computer turn > 1 > 0 and so on.
 let turn = 0;
+// Boolean switch to confirm restart.
+let restartConfirm = false;
 
 // --- Elements to listen to ---
 // - Buttons -
@@ -282,11 +284,22 @@ const computerPlayer = new Character(
 );
 
 // ----- Functions -----
-
-// ----- Event Listening -----
-startButton.addEventListener("click", (pointer) => {
+function startGame() {
   initialize();
   setTimeout(() => {
     humanPlayer.draw(10);
+    acceptButton.disabled = false;
+    returnButton.disabled = false;
+    sortButton.disabled = false;
+    restartButton.disabled = false;
   }, 100);
-});
+  startButton.disabled = true;
+}
+
+function sortHand() {
+  humanPlayer.sort();
+}
+
+// ----- Event Listening -----
+startButton.addEventListener("click", startGame, { once: true });
+sortButton.addEventListener("click", sortHand);
