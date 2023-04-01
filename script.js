@@ -13,8 +13,6 @@ let restartConfirm = false;
 let preRestartMessage = "";
 // Variable to store dragged element.
 let dragged;
-// Array to act as first in last out queue to store elements that were put into play area.
-const filoQueue = [];
 
 // --- Elements to listen to ---
 // - Buttons -
@@ -532,20 +530,20 @@ function cancelRestart() {
 // Accept button function to progress to the next turn, based on let turn variable.
 function progressTurn() {}
 
-// Pop last cardEle from filoQueue and transfer to first empty slot in hand.
-function returnCard() {
-  const cardToReturn = filoQueue.pop();
-  const emptyHandSlot = handElements.cardEleAt(handElements.getEmptyInd()[0]);
-  CardElements.transferCard(cardToReturn, emptyHandSlot);
-  returnButton.disabled = playElements.getCardsLength() < 1;
-}
-
 // Return button function to return all cards played.
-function returnAllCards() {
+function returnCard() {
   // Get array of indices of occupied play area slots.
   const occupiedPlay = playElements.getOccupiedInd();
   // Get array of indices of empty hand area slots.
   const emptyHand = handElements.getEmptyInd();
+  for (let i = 0; i < occupiedPlay.length; i++) {
+    CardElements.transferCard(
+      playElements.cardEleAt(occupiedPlay[i]),
+      handElements.cardEleAt(emptyHand[i])
+    );
+  }
+  // Since all elements returned, disable return button.
+  returnButton.disabled;
 }
 
 // Sort button function to sort player hand.
@@ -577,13 +575,6 @@ function dragDrop(pointer) {
     } else {
       CardElements.swapCard(dragged, pointer.target);
     }
-  }
-  if (targetList.contains("play-area-card")) {
-    filoQueue.push(pointer.target);
-  }
-  if (dragged.classList.contains("play-area-card")) {
-    const draggedIndex = filoQueue.indexOf(pointer.target);
-    filoQueue.splice(draggedIndex, 1);
   }
   returnButton.disabled = playElements.getCardsLength() < 1;
 }
