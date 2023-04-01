@@ -48,24 +48,18 @@ class CardElements {
   constructor(cardArr) {
     // Store array of cardElements
     this.cardArr = cardArr;
-    // Empty array on construction to store played cards OR player hand
+    // Empty array on construction to store card strings from Player hand or Play area.
     this.cards = ["", "", "", "", ""];
   }
 
-  // Return cardElement according to index.
-  get(cardInd) {
-    return this.cardArr[cardInd];
-  }
-
-  // Return cards length.
   getCardsLength() {
-    let cardsLength = 0;
-    for (const card of this.cards) {
-      if (card !== "") {
-        cardsLength++;
+    let counter = 0;
+    for (const item of this.cards) {
+      if (item !== "") {
+        counter++;
       }
     }
-    return cardsLength;
+    return counter;
   }
 
   // Add cardStr to cards array.
@@ -106,9 +100,9 @@ class CardElements {
   }
 
   // Function to update card element with card string.
-  updateCard(cardInd, cardStrInd = -1) {
+  updateCard(cardInd, active = false) {
     const ele = this.cardArr[cardInd];
-    const cardStr = cardStrInd >= 0 ? this.cards[cardStrInd] : "";
+    const cardStr = active ? this.cards[cardInd] : "";
     for (const cardSuit of suitsClasses) {
       ele.classList.remove(cardSuit);
     }
@@ -143,6 +137,17 @@ class CardElements {
         ele.innerHTML = "";
         // Make deactivated cards non-draggable.
         ele.draggable = false;
+    }
+  }
+
+  // Function to sync cards array with cardArr array.
+  syncCardEle() {
+    for (let i = 0; i < this.cards.length; i++) {
+      if (this.cards[i] === "") {
+        this.updateCard(i);
+      } else {
+        this.updateCard(i, true);
+      }
     }
   }
 
@@ -202,7 +207,6 @@ class CardElements {
 
   // Prepare for new game.
   initialize() {
-    this.cards.splice(0);
     this.cards = ["", "", "", "", ""];
     // Reset all cards to inactive, remove numbers and suit elements.
     for (let i = 0; i < this.cardArr.length; i++) {
@@ -216,18 +220,9 @@ Contains functions that interact with player cards' elements and the player hand
 */
 class PlayerCardElements extends CardElements {
   constructor(cardArr) {
+    // Card Array of 10 card elements
     super(cardArr);
     this.cards = ["", "", "", "", "", "", "", "", "", ""];
-  }
-
-  updateCardEle() {
-    for (let i = 0; i < 10; i++) {
-      if (i >= this.deckRef.getCardsLength()) {
-        this.deckRef.updateCard(i);
-      } else {
-        this.deckRef.updateCard(i, i);
-      }
-    }
   }
 
   /* Function to recursively add cards to player's hand. Suit and card number is randomly generated,
@@ -237,7 +232,7 @@ class PlayerCardElements extends CardElements {
   */
   draw(amt) {
     if (amt <= 0) {
-      this.updateCardEle();
+      this.syncCardEle();
       return;
     }
     // Randomize suit, generates 0 to 3.99...96, floored to 0 to 3.
@@ -254,18 +249,18 @@ class PlayerCardElements extends CardElements {
     // Concatenate to suit string.
     card += numb;
     // Add card to Player hand.
-    this.deckRef.pushCardStr(card);
+    this.pushCardStr(card);
     // Recurse
     this.draw(amt - 1);
   }
 
   // Function to be passed through hand.sort();
   #cardSort(cardone, cardtwo) {
-    if (cardone.charAt(0) === cardtwo.charAt(0)) {
-      // If same suit, sort by number value.
+    if (cardone.charAt(0) === cardtwo.charAt(0) && cardone !== "") {
+      // If same suit and not empty, sort by number value.
       return Number(cardone.slice(1)) - Number(cardtwo.slice(1));
-    } else {
-      // If different suits,
+    } else if (cardone !== "" && cardtwo !== "") {
+      // If different suits and not empty,
       if (cardone.charAt(0) < cardtwo.charAt(0)) {
         // Return -1 to indicate that cardone's suit is alphabetically smaller.
         return -1;
@@ -273,12 +268,19 @@ class PlayerCardElements extends CardElements {
         // Return 1 if cardone's suit is alphabetically larger.
         return 1;
       }
+    } else {
+      return cardone === "" ? 1 : -1;
     }
   }
   // Custom sort function.
   sort() {
-    this.deckRef.cards.sort(this.#cardSort);
-    this.updateCardEle();
+    this.cards.sort(this.#cardSort);
+    this.syncCardEle();
+  }
+
+  initialize() {
+    super.initialize();
+    this.cards = ["", "", "", "", "", "", "", "", "", ""];
   }
 }
 
@@ -342,7 +344,7 @@ const areaElements = new CardElements([
 ]);
 
 // Cards in player's hand (0-9 for one-ten)
-const cardElements = new PlayerCardElements([
+const pCardElements = new PlayerCardElements([
   document.querySelector("#card-one"),
   document.querySelector("#card-two"),
   document.querySelector("#card-thr"),
@@ -360,7 +362,7 @@ const humanPlayer = new Character(
   document.querySelector("#player-health-bar"),
   document.querySelector("#player-health-counter"),
   document.querySelector("#player-damage-bar"),
-  cardElements
+  pCardElements
 );
 
 // Computer Character object
@@ -376,7 +378,7 @@ const computerPlayer = new Character(
 function startGame() {
   initialize();
   setTimeout(() => {
-    humanPlayer.draw(10);
+    pCardElements.draw(10);
     acceptButton.disabled = false;
     sortButton.disabled = false;
     restartButton.disabled = false;
@@ -457,7 +459,7 @@ function returnCard() {}
 
 // Sort button function to sort player hand.
 function sortHand() {
-  humanPlayer.sort();
+  pCardElements.sort();
 }
 
 // --- Card Area Functions ---
