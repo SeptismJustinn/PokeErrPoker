@@ -200,7 +200,7 @@ button:disabled {
   cursor: no-drop;
 }
 
-.player-hand {
+#player-hand {
   grid-column: 2/3;
   display: grid;
   grid-template-columns: repeat(10, 10%);
