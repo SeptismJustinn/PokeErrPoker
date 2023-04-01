@@ -11,6 +11,8 @@ const playedCards = [];
 let turn = 0;
 // Boolean switch to confirm restart.
 let restartConfirm = false;
+// Variable to store battle-text before restart.
+let preRestartMessage = "";
 
 // --- Elements to listen to ---
 // - Buttons -
@@ -300,14 +302,65 @@ function startGame() {
     acceptButton.disabled = false;
     sortButton.disabled = false;
     restartButton.disabled = false;
-    versus.classList.toggle("inactive-info");
-    playedValue.classList.toggle("inactive-info");
-    playerTurn.classList.toggle("inactive-info");
-    computerValue.classList.toggle("inactive-info");
-    computerTurn.classList.toggle("inactive-info");
-    battleText.innerHTML = "You have the first attack!";
+    versus.classList.remove("inactive-info");
+    playedValue.classList.remove("inactive-info");
+    playerTurn.classList.remove("inactive-info");
+    computerValue.classList.remove("inactive-info");
+    computerTurn.classList.remove("inactive-info");
+    battleText.innerText = "You have the first attack!";
+    restartButton.addEventListener("click", confirmRestart);
   }, 100);
   startButton.disabled = true;
+}
+
+// Function called on restart button click, different functionality based on restartConfirm switch
+function confirmRestart() {
+  if (!restartConfirm) {
+    // If first click, commandeer battle-text and damage-info to display confirmation message.
+    // Switch restartConfirm.
+    restartConfirm = true;
+    // Store battle-text at point of restart button click.
+    preRestartMessage = battleText.innerText;
+    // Display confirmation message.
+    battleText.innerText =
+      "Really restart?\n\nClick restart again to confirm or return to resume";
+    // Disables damage-info texts.
+    versus.classList.add("inactive-info");
+    playedValue.classList.add("inactive-info");
+    playerTurn.classList.add("inactive-info");
+    computerValue.classList.add("inactive-info");
+    computerTurn.classList.add("inactive-info");
+    // Enable button in case it was still disabled.
+    returnButton.disabled = false;
+    // Remove default functionality of returnButton.
+    returnButton.removeEventListener("click", returnCard);
+    // Add new function to cancel restart.
+    returnButton.addEventListener(
+      "click",
+      () => {
+        // Restore original functionality
+        returnButton.addEventListener("click", returnCard);
+        restartConfirm = false;
+        // Restore battle-text and damage-info to pre-restart conditions.
+        battleText.innerText = preRestartMessage;
+        versus.classList.remove("inactive-info");
+        playedValue.classList.remove("inactive-info");
+        playerTurn.classList.remove("inactive-info");
+        computerValue.classList.remove("inactive-info");
+        computerTurn.classList.remove("inactive-info");
+        if (playedCards.length < 1) {
+          // Disabled return button if no cards have been played, as it should be in this case.
+          returnButton.disabled = true;
+        }
+      },
+      { once: true }
+    );
+  } else {
+    // Otherwise, re-initialize game.
+    startGame();
+    // Reset restartConfirm switch.
+    restartConfirm = false;
+  }
 }
 
 // Accept button function to progress to the next turn, based on let turn variable.
