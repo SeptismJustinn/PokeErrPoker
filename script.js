@@ -20,17 +20,9 @@ const sortButton = document.querySelector("#sort-hand-button");
 
 function initialize() {
   playedCards.splice(0);
-  const allCards = [];
-  allCards.push(...areaCards, ...cardHand);
-
-  // Reset all cards to inactive, remove numbers and suit elements.
-  for (const cardElement of allCards) {
-    cardElement.innerHTML = "";
-    cardElement.classList.add("inactive-card");
-    for (const cardSuit of suitsClasses) {
-      cardElement.classList.remove(cardSuit);
-    }
-  }
+  areaElements.initialize();
+  humanPlayer.initialize();
+  computerPlayer.initialize();
 }
 
 // ----- Classes -----
@@ -45,6 +37,37 @@ class CardElements {
   // Return cardElement according to index
   get(cardInd) {
     return this.cardArr[cardInd];
+  }
+
+  // Function to update card element with card string.
+  updateCard(cardInd, cardStr) {
+    switch (cardStr.charAt(0)) {
+      case "e":
+        // Earth suit
+        break;
+      case "f":
+        // Fire suit
+        break;
+      case "s":
+        // Storm suit
+        break;
+      case "w":
+        // Water suit
+        break;
+      default:
+      // Deactivate card
+    }
+  }
+
+  initialize() {
+    // Reset all cards to inactive, remove numbers and suit elements.
+    for (const cardElement of this.cardArr) {
+      cardElement.innerHTML = "";
+      cardElement.classList.add("inactive-card");
+      for (const cardSuit of suitsClasses) {
+        cardElement.classList.remove(cardSuit);
+      }
+    }
   }
 }
 
@@ -88,6 +111,12 @@ class Character {
   updateDamage() {
     this.damageBar.style.width = this.healthBar.style.width;
   }
+
+  initialize() {
+    this.healthCounter.innerText = this.maxHealth;
+    this.healthBar.style.width = "100%";
+    this.alive = true;
+  }
 }
 
 /* Player subclass to encapsulate functions that only human players will use,
@@ -100,6 +129,16 @@ class Player extends Character {
     this.hand = [];
     // Reference to CardDeck class object that stores class elements.
     this.deckRef = deckRef;
+  }
+
+  updateCardEle() {
+    for (let i = 0; i < 10; i++) {
+      if (i >= this.hand.length) {
+        this.deckRef.updateCard(i);
+      } else {
+        this.deckRef.updateCard(i, this.hand[i]);
+      }
+    }
   }
 
   /* Function to recursively add cards to player's hand. Suit and card number is randomly generated,
@@ -152,6 +191,12 @@ class Player extends Character {
     this.hand.sort(this.#cardSort);
     this.updateCardEle();
   }
+
+  initialize() {
+    super.initialize();
+    this.hand.splice(0);
+    this.deckRef.initialize();
+  }
 }
 
 // --- Class Objects ---
@@ -194,20 +239,6 @@ const computerPlayer = new Character(
 );
 
 // ----- Functions -----
-
-// Function to update card element with card string.
-function updateCard(cardEle, cardStr) {
-  switch (cardStr.charAt(0)) {
-    case "e":
-      break;
-    case "f":
-      break;
-    case "s":
-      break;
-    case "w":
-      break;
-  }
-}
 
 // ----- Event Listening -----
 startButton.addEventListener("click", (pointer) => {
