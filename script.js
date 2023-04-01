@@ -18,6 +18,7 @@ const acceptButton = document.querySelector("#accept-move-button");
 const returnButton = document.querySelector("#return-move-button");
 const sortButton = document.querySelector("#sort-hand-button");
 
+// Prepare for game start.
 function initialize() {
   playedCards.splice(0);
   areaElements.initialize();
@@ -39,34 +40,74 @@ class CardElements {
     return this.cardArr[cardInd];
   }
 
-  // Function to update card element with card string.
-  updateCard(cardInd, cardStr) {
-    switch (cardStr.charAt(0)) {
-      case "e":
-        // Earth suit
+  // Function to update number on card.
+  printNum(cardEle, cardNum) {
+    switch (cardNum) {
+      case 1:
+        // Ace
+        cardEle.innerHTML = "A";
         break;
-      case "f":
-        // Fire suit
+      case 11:
+        // Jack
+        cardEle.innerHTML = "J";
         break;
-      case "s":
-        // Storm suit
+      case 12:
+        // Queen
+        cardEle.innerHTML = "Q";
         break;
-      case "w":
-        // Water suit
+      case 13:
+        // King
+        cardEle.innerHTML = "K";
         break;
       default:
-      // Deactivate card
+        // Number
+        cardEle.innerHTML = cardNum;
     }
   }
 
+  // Function to update card element with card string.
+  updateCard(cardInd, cardStr = "") {
+    const ele = this.cardArr[cardInd];
+    for (const cardSuit of suitsClasses) {
+      ele.classList.remove(cardSuit);
+    }
+    switch (cardStr.charAt(0)) {
+      case "e":
+        // Earth suit
+        ele.classList.remove("inactive-card");
+        ele.classList.add("earth");
+        this.printNum(ele, Number(cardStr.slice(-2)));
+        break;
+      case "f":
+        // Fire suit
+        ele.classList.remove("inactive-card");
+        ele.classList.add("fire");
+        this.printNum(ele, Number(cardStr.slice(-2)));
+        break;
+      case "s":
+        // Storm suit
+        ele.classList.remove("inactive-card");
+        ele.classList.add("storm");
+        this.printNum(ele, Number(cardStr.slice(-2)));
+        break;
+      case "w":
+        // Water suit
+        ele.classList.remove("inactive-card");
+        ele.classList.add("water");
+        this.printNum(ele, Number(cardStr.slice(-2)));
+        break;
+      default:
+        // Deactivate card
+        ele.classList.add("inactive-card");
+        ele.innerHTML = "";
+    }
+  }
+
+  // Prepare for new game.
   initialize() {
     // Reset all cards to inactive, remove numbers and suit elements.
-    for (const cardElement of this.cardArr) {
-      cardElement.innerHTML = "";
-      cardElement.classList.add("inactive-card");
-      for (const cardSuit of suitsClasses) {
-        cardElement.classList.remove(cardSuit);
-      }
+    for (let i = 0; i < this.cardArr.length; i++) {
+      this.updateCard(i);
     }
   }
 }
@@ -112,6 +153,7 @@ class Character {
     this.damageBar.style.width = this.healthBar.style.width;
   }
 
+  // Prepare for new game, reset char stats.
   initialize() {
     this.healthCounter.innerText = this.maxHealth;
     this.healthBar.style.width = "100%";
@@ -192,6 +234,7 @@ class Player extends Character {
     this.updateCardEle();
   }
 
+  // Prepare for new game. Also reset player's cards.
   initialize() {
     super.initialize();
     this.hand.splice(0);
@@ -243,5 +286,7 @@ const computerPlayer = new Character(
 // ----- Event Listening -----
 startButton.addEventListener("click", (pointer) => {
   initialize();
-  humanPlayer.draw(10);
+  setTimeout(() => {
+    humanPlayer.draw(10);
+  }, 100);
 });
