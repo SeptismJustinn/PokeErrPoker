@@ -123,8 +123,8 @@ class Character {
 such as drawing or playing cards.
 */
 class Player extends Character {
-  constructor(healthBar, healthCounter, deckRef) {
-    super(healthBar, healthCounter);
+  constructor(healthBar, healthCounter, damageBar, deckRef) {
+    super(healthBar, healthCounter, damageBar);
     // Player's current hand.
     this.hand = [];
     // Reference to CardDeck class object that stores class elements.
