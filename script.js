@@ -13,6 +13,8 @@ let restartConfirm = false;
 let preRestartMessage = "";
 // Variable to store dragged element.
 let dragged;
+// Array to act as first in last out queue to store elements that were put into play area.
+const filoQueue = [];
 
 // --- Elements to listen to ---
 // - Buttons -
@@ -52,6 +54,7 @@ class CardElements {
     this.cards = ["", "", "", "", ""];
   }
 
+  // Counts number of occupied spaces to return number of cards present.
   getCardsLength() {
     let counter = 0;
     for (const item of this.cards) {
@@ -60,6 +63,33 @@ class CardElements {
       }
     }
     return counter;
+  }
+
+  // Function to get indices of active card areas. CardElements has to have been synced before this function can be used.
+  getOccupiedInd() {
+    const indArr = [];
+    for (let i = 0; i < this.cards.length; i++) {
+      if (this.cards[i] !== "") {
+        indArr.push(i);
+      }
+    }
+    return indArr;
+  }
+
+  // Function to get indices of inactive card areas. CardElements has to have been synced before this function can be used.
+  getEmptyInd() {
+    const indArr = [];
+    for (let i = 0; i < this.cards.length; i++) {
+      if (this.cards[i] === "") {
+        indArr.push(i);
+      }
+    }
+    return indArr;
+  }
+
+  // Getter to return card element at index.
+  cardEleAt(ind) {
+    return this.cardArr[ind];
   }
 
   // Add cardStr to cards array.
@@ -502,8 +532,21 @@ function cancelRestart() {
 // Accept button function to progress to the next turn, based on let turn variable.
 function progressTurn() {}
 
-// Return button function to return last card played.
-function returnCard() {}
+// Pop last cardEle from filoQueue and transfer to first empty slot in hand.
+function returnCard() {
+  const cardToReturn = filoQueue.pop();
+  const emptyHandSlot = handElements.cardEleAt(handElements.getEmptyInd()[0]);
+  CardElements.transferCard(cardToReturn, emptyHandSlot);
+  returnButton.disabled = playElements.getCardsLength() < 1;
+}
+
+// Return button function to return all cards played.
+function returnAllCards() {
+  // Get array of indices of occupied play area slots.
+  const occupiedPlay = playElements.getOccupiedInd();
+  // Get array of indices of empty hand area slots.
+  const emptyHand = handElements.getEmptyInd();
+}
 
 // Sort button function to sort player hand.
 function sortHand() {
@@ -511,6 +554,10 @@ function sortHand() {
 }
 
 // --- Card Area Functions ---
+/* There will always be 10/15 active cards in game. When card is played, the 5 inactive cards also shift around.
+Each time card is moved into play area, push the card into filoQueue. If the card is moved out of play area, remove from filoQueue.
+Pop filoQueue from end if return button is hit.
+*/
 function dragStart(pointer) {
   dragged = pointer.target;
 }
@@ -531,6 +578,14 @@ function dragDrop(pointer) {
       CardElements.swapCard(dragged, pointer.target);
     }
   }
+  if (targetList.contains("play-area-card")) {
+    filoQueue.push(pointer.target);
+  }
+  if (dragged.classList.contains("play-area-card")) {
+    const draggedIndex = filoQueue.indexOf(pointer.target);
+    filoQueue.splice(draggedIndex, 1);
+  }
+  returnButton.disabled = playElements.getCardsLength() < 1;
 }
 
 function dragEnd() {
