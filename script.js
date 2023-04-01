@@ -11,41 +11,6 @@ const playedCards = [];
 let turn = 0;
 
 // --- Elements to listen to ---
-//#region - Play area cards (area1-5) -
-const area1 = document.querySelector("#area-one");
-const area2 = document.querySelector("#area-two");
-const area3 = document.querySelector("#area-thr");
-const area4 = document.querySelector("#area-fou");
-const area5 = document.querySelector("#area-fiv");
-const areaCards = [area1, area2, area3, area4, area5];
-//#endregion
-
-//#region - Player hand cards (card1-0) -
-const card0 = document.querySelector("#card-one");
-const card1 = document.querySelector("#card-two");
-const card2 = document.querySelector("#card-thr");
-const card3 = document.querySelector("#card-fou");
-const card4 = document.querySelector("#card-fiv");
-const card5 = document.querySelector("#card-six");
-const card6 = document.querySelector("#card-sev");
-const card7 = document.querySelector("#card-eig");
-const card8 = document.querySelector("#card-nin");
-const card9 = document.querySelector("#card-ten");
-const cardHand = [
-  card0,
-  card1,
-  card2,
-  card3,
-  card4,
-  card5,
-  card6,
-  card7,
-  card8,
-  card9,
-  card0,
-];
-//#endregion
-
 // - Buttons -
 const startButton = document.querySelector("#start-button");
 const restartButton = document.querySelector("#restart-button");
@@ -69,6 +34,20 @@ function initialize() {
 }
 
 // ----- Classes -----
+/* CardElements class to store reference to div elements designated for cards and their associated functions.
+ */
+class CardElements {
+  constructor(cardArr) {
+    // Store array of cardElements
+    this.cardArr = cardArr;
+  }
+
+  // Return cardElement according to index
+  get(cardInd) {
+    return this.cardArr[cardInd];
+  }
+}
+
 /* Character class to store references to document's div elements:
 #health-counter, #health-bar. Each character is generated with an alive = true status
 and a maxHealth property, taken from #health-counter's innerText when object first created.
@@ -115,10 +94,12 @@ class Character {
 such as drawing or playing cards.
 */
 class Player extends Character {
-  constructor(healthBar, healthCounter) {
+  constructor(healthBar, healthCounter, deckRef) {
     super(healthBar, healthCounter);
     // Player's current hand.
     this.hand = [];
+    // Reference to CardDeck class object that stores class elements.
+    this.deckRef = deckRef;
   }
 
   /* Function to recursively add cards to player's hand. Suit and card number is randomly generated,
@@ -128,6 +109,7 @@ class Player extends Character {
   */
   draw(amt) {
     if (amt <= 0) {
+      this.updateCardEle();
       return;
     }
     // Randomize suit, generates 0 to 3.99...96, floored to 0 to 3.
@@ -148,14 +130,60 @@ class Player extends Character {
     // Recurse
     this.draw(amt - 1);
   }
+
+  // Function to be passed through hand.sort();
+  #cardSort(cardone, cardtwo) {
+    if (cardone.charAt(0) === cardtwo.charAt(0)) {
+      // If same suit, sort by number value.
+      return Number(cardone.slice(1)) - Number(cardtwo.slice(1));
+    } else {
+      // If different suits,
+      if (cardone.charAt(0) < cardtwo.charAt(0)) {
+        // Return -1 to indicate that cardone's suit is alphabetically smaller.
+        return -1;
+      } else {
+        // Return 1 if cardone's suit is alphabetically larger.
+        return 1;
+      }
+    }
+  }
+  // Custom sort function.
+  sort() {
+    this.hand.sort(this.#cardSort);
+    this.updateCardEle();
+  }
 }
 
 // --- Class Objects ---
+// Cards in the play area (0-4 for one-fiv)
+const areaElements = new CardElements([
+  document.querySelector("#area-one"),
+  document.querySelector("#area-two"),
+  document.querySelector("#area-thr"),
+  document.querySelector("#area-fou"),
+  document.querySelector("#area-fiv"),
+]);
+
+// Cards in player's hand (0-9 for one-ten)
+const cardElements = new CardElements([
+  document.querySelector("#card-one"),
+  document.querySelector("#card-two"),
+  document.querySelector("#card-thr"),
+  document.querySelector("#card-fou"),
+  document.querySelector("#card-fiv"),
+  document.querySelector("#card-six"),
+  document.querySelector("#card-sev"),
+  document.querySelector("#card-eig"),
+  document.querySelector("#card-nin"),
+  document.querySelector("#card-ten"),
+]);
+
 // Human player Character object
 const humanPlayer = new Player(
   document.querySelector("#player-health-bar"),
   document.querySelector("#player-health-counter"),
-  document.querySelector("#player-damage-bar")
+  document.querySelector("#player-damage-bar"),
+  cardElements
 );
 
 // Computer Character object
@@ -166,23 +194,6 @@ const computerPlayer = new Character(
 );
 
 // ----- Functions -----
-
-// Function to be passed through playedCards.sort();
-function cardSort(cardone, cardtwo) {
-  if (cardone.charAt(0) === cardtwo.charAt(0)) {
-    // If same suit, sort by number value.
-    return Number(cardone.slice(1)) - Number(cardtwo.slice(1));
-  } else {
-    // If different suits,
-    if (cardone.charAt(0) < cardtwo.charAt(0)) {
-      // Return -1 to indicate that cardone's suit is alphabetically smaller.
-      return -1;
-    } else {
-      // Return 1 if cardone's suit is alphabetically larger.
-      return 1;
-    }
-  }
-}
 
 // Function to update card element with card string.
 function updateCard(cardEle, cardStr) {
