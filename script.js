@@ -170,7 +170,9 @@ class CardElements {
     }
   }
 
-  // Function to calculate score in this.cards. Only calculate first 5 cards since primarily used in play area.
+  /* Function to calculate score in this.cards. Only calculate first 5 cards since primarily used in play area.
+  All 5 cards played are consumed to give the sum as move value. Bonus value is awarded for forming poker hands.
+  */
   calculateScore() {
     // Parse this.cards to get suits info and numbers.
     let sameSuit = true;
@@ -189,7 +191,19 @@ class CardElements {
       // Convert number portion of card string and push to array.
       numberValues.push(Number(this.cards[i].slice(1)));
     }
-    numberValues.sort();
+    // Sort in numerical order.
+    numberValues.sort((first, second) => first - second);
+    // Check if sequential.
+    let isSequence = true;
+    const numSum = numberValues.reduce(
+      (accumulator, value) => accumulator + value
+    );
+    for (let i = 0; i < 4; i++) {
+      isSequence = numberValues[i + 1] - numberValues[i] === 1;
+      if (!isSequence) {
+        break;
+      }
+    }
     if (sameSuit) {
       if (
         numberValues.includes(1) &&
@@ -198,12 +212,74 @@ class CardElements {
         numberValues.includes(12) &&
         numberValues.includes(13)
       ) {
-        // Royal Flush (100) - Same suit, A 10 J Q K
-        return 100;
+        // 1) Royal Flush (200 flat) - Same suit, A 10 J Q K
+        return 200;
+      } else if (isSequence) {
+        // 2) Straight Flush (bonus 50) - Same suit, 5 in a row.
+        return numSum + 50;
+      } else {
+        // 5) Flush (bonus 25) - Same suit, no sequence
+        return numSum + 25;
+      }
+    } else if (isSequence) {
+      // 6) Straight (bonus 20) - 5 in a row
+      return numSum + 20;
+    } else {
+      const numCount = {};
+      let numStr;
+      for (let i = 0; i < 5; i++) {
+        numStr = String(numberValues[i]);
+        if (Object.keys(numCount).includes(numStr)) {
+          numCount[numStr] += 1;
+        } else {
+          numCount[numStr] = 1;
+        }
+      }
+      // Flag for four of a kind present.
+      let fourOfAKind = false;
+      // Flag for three of a kind present.
+      let threeOfAKind = false;
+      // Flag for pair present.
+      let pair = false;
+      // Flag for 2 pairs.
+      let pairOfPairs = false;
+      // Iterate through numCount values to look at number counts. Loops up to 5 times if 5 high cards input.
+      for (const num of Object.values(numCount)) {
+        if (num >= 4) {
+          fourOfAKind = true;
+          break;
+        } else if (num === 3) {
+          threeOfAKind = true;
+        } else if (num === 2) {
+          if (pair) {
+            pairOfPairs = true;
+          } else {
+            pair = true;
+          }
+        }
+      }
+      if (fourOfAKind) {
+        // 3) Four of a kind (bonus 40)- 4 same numbers.
+        return numSum + 40;
+      } else if (pairOfPairs) {
+        // 8) Two Pairs - 2 same + 2 same (bonus 10)
+        return numSum + 10;
+      } else if (threeOfAKind) {
+        if (pair) {
+          // 4) Full House - 3 same + 2 same (bonus 30)
+          return numSum + 30;
+        } else {
+          // 7) Three of a kind (bonus 15) - 3 same
+          return numSum + 15;
+        }
+      } else if (pair) {
+        // 9) Pair (bonus 5)- 2 same
+        return numSum + 5;
+      } else {
+        // 10) High Card (no bonus) - 1 card
+        return numSum;
       }
     }
-    console.log(sameSuit);
-    return numberValues;
   }
 
   // Function to sync card string array with card elements array.
@@ -660,6 +736,36 @@ handArea.addEventListener("dragend", dragEnd);
 
 // ----- Debug Functions -----
 function generateRF() {
-  handElements.cards = ["e01", "e10", "e11", "e12", "e13", "", "", "", "", ""];
-  handElements.syncCardEle();
+  playElements.cards = ["e01", "e10", "e11", "e12", "e13"];
+  playElements.syncCardEle();
+}
+
+function generateSF() {
+  playElements.cards = ["e09", "e10", "e11", "e12", "e13"];
+  playElements.syncCardEle();
+}
+
+function generateFOK() {
+  playElements.cards = ["e13", "s13", "f13", "w13", "e13"];
+  playElements.syncCardEle();
+}
+
+function generateTOK() {
+  playElements.cards = ["e13", "s13", "f13", "w12", "e11"];
+  playElements.syncCardEle();
+}
+
+function generateFH() {
+  playElements.cards = ["e13", "s13", "f13", "w12", "e12"];
+  playElements.syncCardEle();
+}
+
+function generateTP() {
+  playElements.cards = ["e13", "s13", "f11", "w12", "e12"];
+  playElements.syncCardEle();
+}
+
+function generateFlush() {
+  playElements.cards = ["e08", "e10", "e11", "e12", "e13"];
+  playElements.syncCardEle();
 }
