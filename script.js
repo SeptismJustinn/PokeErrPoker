@@ -20,6 +20,14 @@ const acceptButton = document.querySelector("#accept-move-button");
 const returnButton = document.querySelector("#return-move-button");
 const sortButton = document.querySelector("#sort-hand-button");
 
+// - Texts -
+const battleText = document.querySelector("#battle-text");
+const playedValue = document.querySelector("#played-value");
+const computerValue = document.querySelector("#computer-value");
+const playerTurn = document.querySelector("#player-turn");
+const computerTurn = document.querySelector("#computer-turn");
+const versus = document.querySelector("#versus");
+
 // Prepare for game start.
 function initialize() {
   playedCards.splice(0);
@@ -284,22 +292,38 @@ const computerPlayer = new Character(
 );
 
 // ----- Functions -----
+// Start game function, initialize game, disables start button and enables the others.
 function startGame() {
   initialize();
   setTimeout(() => {
     humanPlayer.draw(10);
     acceptButton.disabled = false;
-    returnButton.disabled = false;
     sortButton.disabled = false;
     restartButton.disabled = false;
+    versus.classList.toggle("inactive-info");
+    playedValue.classList.toggle("inactive-info");
+    playerTurn.classList.toggle("inactive-info");
+    computerValue.classList.toggle("inactive-info");
+    computerTurn.classList.toggle("inactive-info");
+    battleText.innerHTML = "You have the first attack!";
   }, 100);
   startButton.disabled = true;
 }
 
+// Accept button function to progress to the next turn, based on let turn variable.
+function progressTurn() {}
+
+// Return button function to return last card played.
+function returnCard() {}
+
+// Sort button function to sort player hand.
 function sortHand() {
   humanPlayer.sort();
 }
 
 // ----- Event Listening -----
 startButton.addEventListener("click", startGame, { once: true });
+acceptButton.addEventListener("click", progressTurn);
+// To-Do, have restart button pause return button functionality, to then use return button to revert from restartConfirm = true
+returnButton.addEventListener("click", returnCard);
 sortButton.addEventListener("click", sortHand);

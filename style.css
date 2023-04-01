@@ -73,7 +73,8 @@ body {
 }
 
 .inactive-info {
-  color: rgb(0, 0, 0, 0);
+  color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .health-bar {
