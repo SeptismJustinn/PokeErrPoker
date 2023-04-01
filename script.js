@@ -13,6 +13,8 @@ let turn = 0;
 let restartConfirm = false;
 // Variable to store battle-text before restart.
 let preRestartMessage = "";
+// Variable to store dragged element.
+let dragged;
 
 // --- Elements to listen to ---
 // - Buttons -
@@ -120,6 +122,60 @@ class CardElements {
         ele.innerHTML = "";
         // Make deactivated cards non-draggable.
         ele.draggable = false;
+    }
+  }
+
+  // Function to transfer card from an active area to an inactive area
+  transferCard(fromEle, toEle) {
+    // Add number to toEle
+    toEle.innerText = fromEle.innerText;
+    // Remove number from fromEle
+    fromEle.innerText = "";
+
+    // Check what suit fromEle possesses
+    for (const suit of suitsClasses) {
+      if (fromEle.classList.contains(suit)) {
+        // Add suit to toEle
+        toEle.classList.add(suit);
+        // Remove suit from fromEle
+        fromEle.classList.remove(suit);
+        break;
+      }
+    }
+    // Activate toEle
+    toEle.classList.remove("inactive-card");
+    toEle.draggable = true;
+
+    // Deactivate fromEle
+    fromEle.classList.add("inactive-card");
+    fromEle.draggable = false;
+  }
+
+  // Function to swap two active cards
+  swapCard(fromEle, toEle) {
+    // Swap numbers
+    const tempText = toEle.innerText;
+    toEle.innerText = fromEle.innerText;
+    fromEle.innerText = tempText;
+
+    // Swap suits
+    let toSuit;
+    let fromSuit;
+    // Find out what each card's suits are
+    for (const suit of suitsClasses) {
+      if (fromEle.classList.contains(suit)) {
+        fromSuit = suit;
+      }
+      if (toEle.classList.contains(suit)) {
+        toSuit = suit;
+      }
+    }
+    // Swap suits over if they are not the same, otherwise leave it.
+    if (toSuit !== fromSuit) {
+      fromEle.classList.remove(fromSuit);
+      toEle.classList.remove(toSuit);
+      fromEle.classList.add(toSuit);
+      toEle.classList.add(fromSuit);
     }
   }
 
@@ -302,6 +358,7 @@ const computerPlayer = new Character(
 );
 
 // ----- Functions -----
+// --- Button Functions ---
 // Start game function, initialize game, disables start button and enables the others.
 function startGame() {
   initialize();
@@ -390,6 +447,29 @@ function sortHand() {
   humanPlayer.sort();
 }
 
+// --- Card Area Functions ---
+function dragStart(pointer) {
+  dragged = pointer.target;
+}
+
+function dragDrop(pointer) {
+  pointer.preventDefault();
+  if (
+    pointer.target.classList.contains("play-area-card") ||
+    pointer.target.classList.contains("player-hand-card")
+  ) {
+    if (pointer.target.classList.contains("inactive-card")) {
+      areaElements.transferCard(dragged, pointer.target);
+    } else {
+      areaElements.swapCard(dragged, pointer.target);
+    }
+  }
+}
+
+function dragEnd() {
+  dragged = "";
+}
+
 // ----- Event Listening -----
 // --- Menu Buttons ---
 startButton.addEventListener("click", startGame, { once: true });
@@ -401,7 +481,17 @@ sortButton.addEventListener("click", sortHand);
 
 // --- Card Listeners ---
 // - Play Area -
-playArea.addEventListener();
+playArea.addEventListener("dragstart", dragStart);
+playArea.addEventListener("dragover", (pointer) => {
+  pointer.preventDefault();
+});
+playArea.addEventListener("drop", dragDrop);
+playArea.addEventListener("dragend", dragEnd);
 
 // - Player Hand Area -
-handArea.addEventListener();
+handArea.addEventListener("dragstart", dragStart);
+handArea.addEventListener("dragover", (pointer) => {
+  pointer.preventDefault();
+});
+handArea.addEventListener("drop", dragDrop);
+handArea.addEventListener("dragend", dragEnd);
