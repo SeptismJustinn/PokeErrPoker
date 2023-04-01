@@ -5,8 +5,6 @@
 */
 const suits = ["e", "f", "s", "w"];
 const suitsClasses = ["earth", "fire", "storm", "water"];
-// Cards being played for this round. Up to 5 cards played per round.
-const playedCards = [];
 // Turn alternates between 0: player turn > 1: between > 2: Computer turn > 1 > 0 and so on.
 let turn = 0;
 // Boolean switch to confirm restart.
@@ -38,7 +36,6 @@ const handArea = document.querySelector("#player-hand");
 
 // Prepare for game start.
 function initialize() {
-  playedCards.splice(0);
   areaElements.initialize();
   humanPlayer.initialize();
   computerPlayer.initialize();
@@ -51,11 +48,23 @@ class CardElements {
   constructor(cardArr) {
     // Store array of cardElements
     this.cardArr = cardArr;
+    // Empty array on construction to store played cards OR player hand
+    this.cards = [];
   }
 
-  // Return cardElement according to index
+  // Return cardElement according to index.
   get(cardInd) {
     return this.cardArr[cardInd];
+  }
+
+  // Return cards length.
+  getCardsLength() {
+    return this.cards.length;
+  }
+
+  // Add cardStr to cards array.
+  pushCardStr(cardStr) {
+    this.cards.push(cardStr);
   }
 
   // Function to update number on card.
@@ -86,8 +95,9 @@ class CardElements {
   }
 
   // Function to update card element with card string.
-  updateCard(cardInd, cardStr = "") {
+  updateCard(cardInd, cardStrInd = -1) {
     const ele = this.cardArr[cardInd];
+    const cardStr = cardStrInd >= 0 ? this.cards[cardStrInd] : "";
     for (const cardSuit of suitsClasses) {
       ele.classList.remove(cardSuit);
     }
@@ -181,6 +191,7 @@ class CardElements {
 
   // Prepare for new game.
   initialize() {
+    this.cards.splice(0);
     // Reset all cards to inactive, remove numbers and suit elements.
     for (let i = 0; i < this.cardArr.length; i++) {
       this.updateCard(i);
@@ -243,18 +254,16 @@ such as drawing or playing cards.
 class Player extends Character {
   constructor(healthBar, healthCounter, damageBar, deckRef) {
     super(healthBar, healthCounter, damageBar);
-    // Player's current hand.
-    this.hand = [];
     // Reference to CardDeck class object that stores class elements.
     this.deckRef = deckRef;
   }
 
   updateCardEle() {
     for (let i = 0; i < 10; i++) {
-      if (i >= this.hand.length) {
+      if (i >= this.deckRef.getCardsLength()) {
         this.deckRef.updateCard(i);
       } else {
-        this.deckRef.updateCard(i, this.hand[i]);
+        this.deckRef.updateCard(i, i);
       }
     }
   }
@@ -283,7 +292,7 @@ class Player extends Character {
     // Concatenate to suit string.
     card += numb;
     // Add card to Player hand.
-    this.hand.push(card);
+    this.deckRef.pushCardStr(card);
     // Recurse
     this.draw(amt - 1);
   }
@@ -306,14 +315,13 @@ class Player extends Character {
   }
   // Custom sort function.
   sort() {
-    this.hand.sort(this.#cardSort);
+    this.deckRef.cards.sort(this.#cardSort);
     this.updateCardEle();
   }
 
   // Prepare for new game. Also reset player's cards.
   initialize() {
     super.initialize();
-    this.hand.splice(0);
     this.deckRef.initialize();
   }
 }
@@ -406,7 +414,7 @@ function confirmRestart() {
     // Reset restartConfirm switch.
     restartConfirm = false;
     preRestartMessage = "";
-    if (playedCards.length < 1) {
+    if (areaElements.getCardsLength() < 1) {
       // Disabled return button if no cards have been played, as it should be in this case.
       returnButton.disabled = true;
     }
@@ -430,7 +438,7 @@ function cancelRestart() {
   playerTurn.classList.remove("inactive-info");
   computerValue.classList.remove("inactive-info");
   computerTurn.classList.remove("inactive-info");
-  if (playedCards.length < 1) {
+  if (areaElements.getCardsLength().length < 1) {
     // Disabled return button if no cards have been played, as it should be in this case.
     returnButton.disabled = true;
   }
@@ -454,9 +462,10 @@ function dragStart(pointer) {
 
 function dragDrop(pointer) {
   pointer.preventDefault();
+  const targetList = pointer.target.classList;
   if (
-    pointer.target.classList.contains("play-area-card") ||
-    pointer.target.classList.contains("player-hand-card")
+    targetList.contains("play-area-card") ||
+    targetList.contains("player-hand-card")
   ) {
     if (pointer.target.classList.contains("inactive-card")) {
       areaElements.transferCard(dragged, pointer.target);
