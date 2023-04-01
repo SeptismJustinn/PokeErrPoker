@@ -37,11 +37,13 @@ const handArea = document.querySelector("#player-hand");
 // Prepare for game start.
 function initialize() {
   playElements.initialize();
+  handElements.initialize();
   humanPlayer.initialize();
   computerPlayer.initialize();
 }
 
 // ----- Classes -----
+// --- Card Classes ---
 /* CardElements class to store reference to div elements designated for cards and their associated functions.
  */
 class CardElements {
@@ -168,6 +170,42 @@ class CardElements {
     }
   }
 
+  // Function to calculate score in this.cards. Only calculate first 5 cards since primarily used in play area.
+  calculateScore() {
+    // Parse this.cards to get suits info and numbers.
+    let sameSuit = true;
+    let lastSuit = "";
+    const numberValues = [];
+    // Iterate through first 5 cardStr.
+    for (let i = 0; i < 5; i++) {
+      // Check if any single card has a different suit from another, sameSuit = false if so.
+      if (lastSuit === "") {
+        lastSuit = this.cards[i].slice(0, 1);
+      } else {
+        if (this.cards[i].slice(0, 1) !== lastSuit) {
+          sameSuit = false;
+        }
+      }
+      // Convert number portion of card string and push to array.
+      numberValues.push(Number(this.cards[i].slice(1)));
+    }
+    numberValues.sort();
+    if (sameSuit) {
+      if (
+        numberValues.includes(1) &&
+        numberValues.includes(10) &&
+        numberValues.includes(11) &&
+        numberValues.includes(12) &&
+        numberValues.includes(13)
+      ) {
+        // Royal Flush (100) - Same suit, A 10 J Q K
+        return 100;
+      }
+    }
+    console.log(sameSuit);
+    return numberValues;
+  }
+
   // Function to sync card string array with card elements array.
   syncCardEle() {
     for (let i = 0; i < this.cards.length; i++) {
@@ -220,6 +258,30 @@ class CardElements {
         this.cards[i] = cardString;
       }
     }
+  }
+
+  // Function to be passed through hand.sort();
+  #cardSort(cardone, cardtwo) {
+    if (cardone.charAt(0) === cardtwo.charAt(0) && cardone !== "") {
+      // If same suit and not empty, sort by number value.
+      return Number(cardone.slice(1)) - Number(cardtwo.slice(1));
+    } else if (cardone !== "" && cardtwo !== "") {
+      // If different suits and not empty,
+      if (cardone.charAt(0) < cardtwo.charAt(0)) {
+        // Return -1 to indicate that cardone's suit is alphabetically smaller.
+        return -1;
+      } else {
+        // Return 1 if cardone's suit is alphabetically larger.
+        return 1;
+      }
+    } else {
+      return cardone === "" ? 1 : -1;
+    }
+  }
+  // Custom sort function.
+  sort() {
+    this.cards.sort(this.#cardSort);
+    this.syncCardEle();
   }
 
   // Static function to transfer card from an active area to an inactive area
@@ -331,36 +393,13 @@ class PlayerCardElements extends CardElements {
     this.draw(amt - 1);
   }
 
-  // Function to be passed through hand.sort();
-  #cardSort(cardone, cardtwo) {
-    if (cardone.charAt(0) === cardtwo.charAt(0) && cardone !== "") {
-      // If same suit and not empty, sort by number value.
-      return Number(cardone.slice(1)) - Number(cardtwo.slice(1));
-    } else if (cardone !== "" && cardtwo !== "") {
-      // If different suits and not empty,
-      if (cardone.charAt(0) < cardtwo.charAt(0)) {
-        // Return -1 to indicate that cardone's suit is alphabetically smaller.
-        return -1;
-      } else {
-        // Return 1 if cardone's suit is alphabetically larger.
-        return 1;
-      }
-    } else {
-      return cardone === "" ? 1 : -1;
-    }
-  }
-  // Custom sort function.
-  sort() {
-    this.cards.sort(this.#cardSort);
-    this.syncCardEle();
-  }
-
   initialize() {
     super.initialize();
     this.cards = ["", "", "", "", "", "", "", "", "", ""];
   }
 }
 
+// --- Character Class ---
 /* Character class to store references to document's div elements:
 #health-counter, #health-bar. Each character is generated with an alive = true status
 and a maxHealth property, taken from #health-counter's innerText when object first created.
@@ -455,7 +494,6 @@ function startGame() {
   initialize();
   setTimeout(() => {
     handElements.draw(10);
-    acceptButton.disabled = false;
     sortButton.disabled = false;
     restartButton.disabled = false;
     versus.classList.remove("inactive-info");
@@ -557,29 +595,40 @@ Each time card is moved into play area, push the card into filoQueue. If the car
 Pop filoQueue from end if return button is hit.
 */
 function dragStart(pointer) {
+  // Bind dragged element to dragged variable.
   dragged = pointer.target;
 }
 
+// Function to drag card element from one card area to another.
 function dragDrop(pointer) {
   pointer.preventDefault();
+  // If card was dragged out of an area then returned to the exact same area, ignore the move.
   if (pointer.target === dragged) {
     return;
   }
+  // Otherwise, obtain dropped target's classList
   const targetList = pointer.target.classList;
   if (
     targetList.contains("play-area-card") ||
     targetList.contains("player-hand-card")
   ) {
+    // If droppped target is an appropriate area,
     if (targetList.contains("inactive-card")) {
+      // Transfer card from dragged area to dropped area.
       CardElements.transferCard(dragged, pointer.target);
     } else {
+      // Swap cards between dragged area and dropped area.
       CardElements.swapCard(dragged, pointer.target);
     }
   }
+  // Enable return button if more than 1 element in play area.
   returnButton.disabled = playElements.getCardsLength() < 1;
+  // Enable accept button if 5 cards have been played.
+  acceptButton.disabled = playElements.getCardsLength() !== 5;
 }
 
 function dragEnd() {
+  // Reset dragged variable.
   dragged = "";
 }
 
@@ -608,3 +657,9 @@ handArea.addEventListener("dragover", (pointer) => {
 });
 handArea.addEventListener("drop", dragDrop);
 handArea.addEventListener("dragend", dragEnd);
+
+// ----- Debug Functions -----
+function generateRF() {
+  handElements.cards = ["e01", "e10", "e11", "e12", "e13", "", "", "", "", ""];
+  handElements.syncCardEle();
+}
