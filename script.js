@@ -308,7 +308,6 @@ function startGame() {
     computerValue.classList.remove("inactive-info");
     computerTurn.classList.remove("inactive-info");
     battleText.innerText = "You have the first attack!";
-    restartButton.addEventListener("click", confirmRestart);
   }, 100);
   startButton.disabled = true;
 }
@@ -335,31 +334,40 @@ function confirmRestart() {
     // Remove default functionality of returnButton.
     returnButton.removeEventListener("click", returnCard);
     // Add new function to cancel restart.
-    returnButton.addEventListener(
-      "click",
-      () => {
-        // Restore original functionality
-        returnButton.addEventListener("click", returnCard);
-        restartConfirm = false;
-        // Restore battle-text and damage-info to pre-restart conditions.
-        battleText.innerText = preRestartMessage;
-        versus.classList.remove("inactive-info");
-        playedValue.classList.remove("inactive-info");
-        playerTurn.classList.remove("inactive-info");
-        computerValue.classList.remove("inactive-info");
-        computerTurn.classList.remove("inactive-info");
-        if (playedCards.length < 1) {
-          // Disabled return button if no cards have been played, as it should be in this case.
-          returnButton.disabled = true;
-        }
-      },
-      { once: true }
-    );
+    returnButton.addEventListener("click", cancelRestart, { once: true });
   } else {
     // Otherwise, re-initialize game.
     startGame();
     // Reset restartConfirm switch.
     restartConfirm = false;
+    preRestartMessage = "";
+    if (playedCards.length < 1) {
+      // Disabled return button if no cards have been played, as it should be in this case.
+      returnButton.disabled = true;
+    }
+    // Remove cancelRestart function of return button so that it does not linger for the next game session.
+    returnButton.removeEventListener("click", cancelRestart);
+    // Restore normal return button functionality.
+    returnButton.addEventListener("click", returnCard);
+  }
+}
+
+// Function called on return button click, after first restart button click.
+function cancelRestart() {
+  // Restore original functionality
+  returnButton.addEventListener("click", returnCard);
+  restartConfirm = false;
+  // Restore battle-text and damage-info to pre-restart conditions.
+  battleText.innerText = preRestartMessage;
+  preRestartMessage = "";
+  versus.classList.remove("inactive-info");
+  playedValue.classList.remove("inactive-info");
+  playerTurn.classList.remove("inactive-info");
+  computerValue.classList.remove("inactive-info");
+  computerTurn.classList.remove("inactive-info");
+  if (playedCards.length < 1) {
+    // Disabled return button if no cards have been played, as it should be in this case.
+    returnButton.disabled = true;
   }
 }
 
@@ -376,6 +384,7 @@ function sortHand() {
 
 // ----- Event Listening -----
 startButton.addEventListener("click", startGame, { once: true });
+restartButton.addEventListener("click", confirmRestart);
 acceptButton.addEventListener("click", progressTurn);
 // To-Do, have restart button pause return button functionality, to then use return button to revert from restartConfirm = true
 returnButton.addEventListener("click", returnCard);
