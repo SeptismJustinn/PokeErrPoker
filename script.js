@@ -775,11 +775,13 @@ function cancelRestart() {
   // Restore battle-text and damage-info to pre-restart conditions.
   battleText.innerText = preRestartMessage;
   preRestartMessage = "";
-  versus.classList.remove("inactive-info");
-  playedValue.classList.remove("inactive-info");
-  playerTurn.classList.remove("inactive-info");
-  computerValue.classList.remove("inactive-info");
-  computerTurn.classList.remove("inactive-info");
+  if (!gameover) {
+    versus.classList.remove("inactive-info");
+    playedValue.classList.remove("inactive-info");
+    playerTurn.classList.remove("inactive-info");
+    computerValue.classList.remove("inactive-info");
+    computerTurn.classList.remove("inactive-info");
+  }
   if (playElements.getCardsLength().length < 1) {
     // Disabled return button if no cards have been played, as it should be in this case.
     returnButton.disabled = true;
