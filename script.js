@@ -36,6 +36,10 @@ const versus = document.querySelector("#versus");
 const playArea = document.querySelector("#play-area");
 const handArea = document.querySelector("#player-hand");
 
+// - Character Images -
+const playerImg = document.querySelector("#player-image");
+const computerImg = document.querySelector("#computer-image");
+
 // Prepare for game start.
 function initialize() {
   turn = 0;
@@ -43,6 +47,8 @@ function initialize() {
   handElements.initialize();
   humanPlayer.initialize();
   computerPlayer.initialize();
+  playerImg.src = "PlayerV1.png";
+  computerImg.src = "ErrV1.png";
   if (playerTurn.classList.contains("block-text")) {
     swapTurn();
   }
@@ -564,7 +570,6 @@ class Character {
       this.healthCounter.innerText = 0;
       this.healthBar.style.width = 0;
       this.alive = false;
-      // Insert ded function?
     }
   }
 
@@ -639,6 +644,7 @@ function rollCPU() {
   return roll >= 10 ? roll : 10;
 }
 
+// Function for juggling turns around. If player attacked last turn, they are defending now and vice versa for computer.
 function swapTurn() {
   const tempTurn = playerTurn.innerText;
   playerTurn.innerText = computerTurn.innerText;
@@ -656,6 +662,41 @@ function swapTurn() {
   } else {
     computerTurn.classList.remove("damage-text");
     computerTurn.classList.add("block-text");
+  }
+}
+
+// Function to check if any player is dead and cue win or end game. Otherwise do nothing.
+// Boolean return value used to check if accept button is to be re-enabled in progressTurn.
+function checkDed() {
+  if (!humanPlayer.alive) {
+    gameWin(false);
+    return true;
+  } else if (!computerPlayer.alive) {
+    gameWin(true);
+    return true;
+  }
+}
+
+function gameWin(winCheck) {
+  // Remove numeric battle-info elements.
+  versus.classList.add("inactive-info");
+  playedValue.classList.add("inactive-info");
+  playerTurn.classList.add("inactive-info");
+  computerValue.classList.add("inactive-info");
+  computerTurn.classList.add("inactive-info");
+  acceptButton.disabled = true;
+  sortButton.disabled = true;
+  handElements.initialize();
+  if (winCheck) {
+    // Player wins.
+    battleText.innerText =
+      "You win! Err is slain!\nRestart to challenge Err again!";
+    computerImg.src = "ErrV1-down.png";
+  } else {
+    // Computer wins
+    battleText.innerText =
+      "You are defeated,\nErr rampages along...\nRestart to try again";
+    playerImg.src = "PlayerV1-down.png";
   }
 }
 
@@ -742,7 +783,7 @@ function cancelRestart() {
 function progressTurn() {
   // Temporarily disable accept button to give reading time.
   acceptButton.disabled = true;
-  setTimeout(() => {
+  const acceptDelay = setTimeout(() => {
     acceptButton.disabled = false;
   }, 500);
   let netMoveValue = 0;
@@ -779,6 +820,9 @@ function progressTurn() {
       playElements.initialize();
       // Refill hand.
       handElements.draw(5);
+      if (checkDed()) {
+        clearTimeout(acceptDelay);
+      }
       break;
     case 2:
       // Player defence. No takebacks.
@@ -811,6 +855,9 @@ function progressTurn() {
       playElements.initialize();
       // Refill hand.
       handElements.draw(5);
+      if (checkDed()) {
+        clearTimeout(acceptDelay);
+      }
       break;
   }
 }
