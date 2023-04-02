@@ -900,7 +900,11 @@ Pop filoQueue from end if return button is hit.
 */
 function dragStart(pointer) {
   // Bind dragged element to dragged variable.
-  if (pointer.target.classList.contains("inactive-card")) {
+  if (
+    pointer.target.classList.contains("inactive-card") ||
+    !pointer.target.classList.contains("play-area-card") ||
+    !pointer.target.classList.contains("player-hand-card")
+  ) {
     return;
   }
   dragged = pointer.target;
@@ -1072,5 +1076,13 @@ function testRoll() {
     }
   }
   console.log(`${hi} greater than 33 rolls, ${me} 11-33 rolls, ${lo} 10 rolls`);
+}
+
+function forceWin() {
+  gameWin(true);
+}
+
+function forceLose() {
+  gameWin(false);
 }
 //#endregion
