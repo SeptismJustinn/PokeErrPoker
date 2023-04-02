@@ -155,7 +155,8 @@ body {
   justify-self: center;
 }
 
-#computer-health-bar {
+#computer-health-bar,
+#computer-damage-bar {
   justify-self: end;
 }
 

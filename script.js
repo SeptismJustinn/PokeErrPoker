@@ -8,7 +8,7 @@ const suitsClasses = ["earth", "fire", "storm", "water"];
 // Turn alternates between 0: player turn > 1: between > 2: Computer turn > 1 > 0 and so on.
 let turn = 0;
 // Array of messages to display each turn.
-const turnMessages = ["Attack!", "Accept to continue", "Defend!"];
+const turnMessages = ["Attack!", "\nAccept to continue", "Defend!"];
 // Boolean switch to confirm restart.
 let restartConfirm = false;
 // Variable to store battle-text before restart.
@@ -38,10 +38,14 @@ const handArea = document.querySelector("#player-hand");
 
 // Prepare for game start.
 function initialize() {
+  turn = 0;
   playElements.initialize();
   handElements.initialize();
   humanPlayer.initialize();
   computerPlayer.initialize();
+  if (playerTurn.classList.contains("block-text")) {
+    swapTurn();
+  }
 }
 
 // ----- Classes -----
@@ -247,7 +251,11 @@ class CardElements {
       }
     } else if (isSequence) {
       // 6) Straight (bonus 20) - 5 in a row
-      return [numSum + 20, "Impale!"];
+      if (turn === 0) {
+        return [numSum + 20, "Impale!"];
+      } else {
+        return [numSum + 20, "Impede!"];
+      }
     } else {
       const numCount = {};
       let numStr;
@@ -284,24 +292,48 @@ class CardElements {
       }
       if (fourOfAKind) {
         // 3) Four of a kind (bonus 40)- 4 same numbers.
-        return [numSum + 40, "Stab Flurry!"];
+        if (turn === 0) {
+          return [numSum + 40, "Stab Flurry!"];
+        } else {
+          return [numSum + 40, "Spin Deflect!"];
+        }
       } else if (pairOfPairs) {
         // 8) Two Pairs - 2 same + 2 same (bonus 10)
-        return [numSum + 10, "Double Stab!"];
+        if (turn === 0) {
+          return [numSum + 10, "Double Stab!"];
+        } else {
+          return [numSum + 10, "Double Step!"];
+        }
       } else if (threeOfAKind) {
         if (pair) {
           // 4) Full House - 3 same + 2 same (bonus 30)
-          return [numSum + 30, "Full Impact!"];
+          if (turn === 0) {
+            return [numSum + 30, "Full Impact!"];
+          } else {
+            return [numSum + 30, "Full Guard!"];
+          }
         } else {
           // 7) Three of a kind (bonus 15) - 3 same
-          return [numSum + 15, "Triple Pierce!"];
+          if (turn === 0) {
+            return [numSum + 15, "Triple Pierce!"];
+          } else {
+            return [numSum + 15, "Triple Jump!"];
+          }
         }
       } else if (pair) {
         // 9) Pair (bonus 5)- 2 same
-        return [numSum + 5, "Thrust!"];
+        if (turn === 0) {
+          return [numSum + 5, "Thrust!"];
+        } else {
+          return [numSum + 5, "Handle Deflect!"];
+        }
       } else {
         // 10) High Card (no bonus) - 1 card
-        return [numSum, "Slash!"];
+        if (turn === 0) {
+          return [numSum, "Slash!"];
+        } else {
+          return [numSum, "Stand Firm!"];
+        }
       }
     }
   }
@@ -583,7 +615,7 @@ const humanPlayer = new Character(
 // Computer Character object
 const computerPlayer = new Character(
   document.querySelector("#computer-health-bar"),
-  document.querySelector("#player-health-counter"),
+  document.querySelector("#computer-health-counter"),
   document.querySelector("#computer-damage-bar")
 );
 
@@ -605,6 +637,26 @@ Math.random transformed exponentially to make it less likely to roll high number
 function rollCPU() {
   const roll = Math.round(Math.random() ** 3 * 50);
   return roll >= 10 ? roll : 10;
+}
+
+function swapTurn() {
+  const tempTurn = playerTurn.innerText;
+  playerTurn.innerText = computerTurn.innerText;
+  computerTurn.innerText = tempTurn;
+  if (playerTurn.classList.contains("damage-text")) {
+    playerTurn.classList.remove("damage-text");
+    playerTurn.classList.add("block-text");
+  } else {
+    playerTurn.classList.remove("block-text");
+    playerTurn.classList.add("damage-text");
+  }
+  if (computerTurn.classList.contains("block-text")) {
+    computerTurn.classList.remove("block-text");
+    computerTurn.classList.add("damage-text");
+  } else {
+    computerTurn.classList.remove("damage-text");
+    computerTurn.classList.add("block-text");
+  }
 }
 
 // --- Button Functions ---
@@ -687,7 +739,81 @@ function cancelRestart() {
 }
 
 // Accept button function to progress to the next turn, based on let turn variable.
-function progressTurn() {}
+function progressTurn() {
+  // Temporarily disable accept button to give reading time.
+  acceptButton.disabled = true;
+  setTimeout(() => {
+    acceptButton.disabled = false;
+  }, 500);
+  let netMoveValue = 0;
+  switch (turn) {
+    case 0:
+      // Player attack. No takebacks.
+      returnButton.disabled = true;
+      // Net value of move after deducting player attack from computer defence. To be passed into updateHealth.
+      netMoveValue =
+        Number(computerValue.innerText) - Number(playedValue.innerText);
+      if (netMoveValue < 0) {
+        // If player does more damage than computer defence,
+        computerPlayer.updateHealth(netMoveValue);
+        battleText.innerText = `You attack for ${netMoveValue * -1} damage! ${
+          turnMessages[1]
+        }`;
+      } else {
+        battleText.innerText = `Err shrugs off your attack! ${turnMessages[1]}`;
+      }
+      turn++;
+      break;
+    case 1:
+      // Consolidate health bars.
+      humanPlayer.updateDamage();
+      computerPlayer.updateDamage();
+      turn++;
+      battleText.innerText = turnMessages[turn];
+      // Update CPU move value and reset player move value.
+      updateCPUInfo(rollCPU());
+      playedValue.innerText = 0;
+      // Swap turns around.
+      swapTurn();
+      // Clear play area.
+      playElements.initialize();
+      // Refill hand.
+      handElements.draw(5);
+      break;
+    case 2:
+      // Player defence. No takebacks.
+      returnButton.disabled = true;
+      // Net value of move after deducting computer attack from player defence. To be passed into updateHealth.
+      netMoveValue =
+        Number(playedValue.innerText) - Number(computerValue.innerText);
+      if (netMoveValue < 0) {
+        // If player does more damage than computer defence,
+        humanPlayer.updateHealth(netMoveValue);
+        battleText.innerText = `Err attacks for ${netMoveValue * -1} damage! ${
+          turnMessages[1]
+        }`;
+      } else {
+        battleText.innerText = `Your defence negates Err's attack! ${turnMessages[1]}`;
+      }
+      turn++;
+      break;
+    case 3:
+      humanPlayer.updateDamage();
+      computerPlayer.updateDamage();
+      turn = 0;
+      battleText.innerText = turnMessages[turn];
+      // Update CPU move value and reset player move value.
+      updateCPUInfo(rollCPU());
+      playedValue.innerText = 0;
+      // Swap turns around.
+      swapTurn();
+      // Clear play area.
+      playElements.initialize();
+      // Refill hand.
+      handElements.draw(5);
+      break;
+  }
+}
 
 // Return button function to return all cards played.
 function returnCard() {
