@@ -7,6 +7,8 @@ const suits = ["e", "f", "s", "w"];
 const suitsClasses = ["earth", "fire", "storm", "water"];
 // Turn alternates between 0: player turn > 1: between > 2: Computer turn > 1 > 0 and so on.
 let turn = 0;
+// Array of messages to display each turn.
+const turnMessages = ["Attack!", "Accept to continue", "Defend!"];
 // Boolean switch to confirm restart.
 let restartConfirm = false;
 // Variable to store battle-text before restart.
@@ -172,16 +174,23 @@ class CardElements {
 
   /* Function to calculate score in this.cards. Only calculate first 5 cards since primarily used in play area.
   All 5 cards played are consumed to give the sum as move value. Bonus value is awarded for forming poker hands.
+  Returns array, containing score and message describing hand played.
   */
   calculateScore() {
     // Parse this.cards to get suits info and numbers.
     let sameSuit = true;
     let lastSuit = "";
+    // Message to indicated hand played.
+    let message = "";
+    // Sum of card values played.
+    let numSum;
     const numberValues = [];
     // Iterate through first 5 cardStr.
     for (let i = 0; i < 5; i++) {
       // Check if any single card has a different suit from another, sameSuit = false if so.
-      if (lastSuit === "") {
+      if (this.cards[i] === "") {
+        continue;
+      } else if (lastSuit === "") {
         lastSuit = this.cards[i].slice(0, 1);
       } else {
         if (this.cards[i].slice(0, 1) !== lastSuit) {
@@ -195,8 +204,9 @@ class CardElements {
     numberValues.sort((first, second) => first - second);
     // Check if sequential.
     let isSequence = true;
-    const numSum = numberValues.reduce(
-      (accumulator, value) => accumulator + value
+    numSum = numberValues.reduce(
+      (accumulator, value) => accumulator + value,
+      0
     );
     for (let i = 0; i < 4; i++) {
       isSequence = numberValues[i + 1] - numberValues[i] === 1;
@@ -205,6 +215,20 @@ class CardElements {
       }
     }
     if (sameSuit) {
+      switch (lastSuit) {
+        case "e":
+          message = " of Earth!";
+          break;
+        case "f":
+          message = " of Fire!";
+          break;
+        case "s":
+          message = " of Storm!";
+          break;
+        case "w":
+          message = " of Water!";
+          break;
+      }
       if (
         numberValues.includes(1) &&
         numberValues.includes(10) &&
@@ -213,17 +237,17 @@ class CardElements {
         numberValues.includes(13)
       ) {
         // 1) Royal Flush (200 flat) - Same suit, A 10 J Q K
-        return 200;
+        return [200, "Royal Force" + message];
       } else if (isSequence) {
         // 2) Straight Flush (bonus 50) - Same suit, 5 in a row.
-        return numSum + 50;
+        return [numSum + 50, "Supreme Force" + message];
       } else {
         // 5) Flush (bonus 25) - Same suit, no sequence
-        return numSum + 25;
+        return [numSum + 25, message.slice(4, -1) + " Force!"];
       }
     } else if (isSequence) {
       // 6) Straight (bonus 20) - 5 in a row
-      return numSum + 20;
+      return [numSum + 20, "Impale!"];
     } else {
       const numCount = {};
       let numStr;
@@ -260,24 +284,24 @@ class CardElements {
       }
       if (fourOfAKind) {
         // 3) Four of a kind (bonus 40)- 4 same numbers.
-        return numSum + 40;
+        return [numSum + 40, "Stab Flurry!"];
       } else if (pairOfPairs) {
         // 8) Two Pairs - 2 same + 2 same (bonus 10)
-        return numSum + 10;
+        return [numSum + 10, "Double Stab!"];
       } else if (threeOfAKind) {
         if (pair) {
           // 4) Full House - 3 same + 2 same (bonus 30)
-          return numSum + 30;
+          return [numSum + 30, "Full Impact!"];
         } else {
           // 7) Three of a kind (bonus 15) - 3 same
-          return numSum + 15;
+          return [numSum + 15, "Triple Pierce!"];
         }
       } else if (pair) {
         // 9) Pair (bonus 5)- 2 same
-        return numSum + 5;
+        return [numSum + 5, "Thrust!"];
       } else {
         // 10) High Card (no bonus) - 1 card
-        return numSum;
+        return [numSum, "Slash!"];
       }
     }
   }
@@ -564,6 +588,12 @@ const computerPlayer = new Character(
 );
 
 // ----- Functions -----
+// Function to update battle-info based on array returned by CardElements.calculateScore().
+function updateBattleInfo(infoArr) {
+  playedValue.innerText = infoArr[0];
+  battleText.innerText = infoArr[1];
+}
+
 // --- Button Functions ---
 // Start game function, initialize game, disables start button and enables the others.
 function startGame() {
@@ -578,6 +608,7 @@ function startGame() {
     computerValue.classList.remove("inactive-info");
     computerTurn.classList.remove("inactive-info");
     battleText.innerText = "You have the first attack!";
+    playedValue.innerText = 0;
   }, 100);
   startButton.disabled = true;
 }
@@ -701,11 +732,58 @@ function dragDrop(pointer) {
   returnButton.disabled = playElements.getCardsLength() < 1;
   // Enable accept button if 5 cards have been played.
   acceptButton.disabled = playElements.getCardsLength() !== 5;
+  if (playElements.getCardsLength() === 5) {
+    // If 5 cards have been played, calculate score and display message.
+    updateBattleInfo(playElements.calculateScore());
+  } else {
+    // Otherwise, revert to default message and clear damage value.
+    updateBattleInfo([0, turnMessages[turn]]);
+  }
 }
 
 function dragEnd() {
   // Reset dragged variable.
   dragged = "";
+}
+
+// On card click, move card to available empty slots, ignore otherwise.
+function cardClick(pointer) {
+  const targetList = pointer.target.classList;
+  if (targetList.contains("player-hand-card")) {
+    // If player hand card is clicked, check for empty spaces in play area.
+    const targetIndices = playElements.getEmptyInd();
+    if (targetIndices.length === 0) {
+      // If no empty spaces, ignore the click.
+      return;
+    }
+    CardElements.transferCard(
+      pointer.target,
+      playElements.cardEleAt(targetIndices[0])
+    );
+  } else if (targetList.contains("play-area-card")) {
+    // If play area card is clicked, return to first empty space from the left.
+    const targetIndices = handElements.getEmptyInd();
+    if (targetIndices.length === 0) {
+      // If no empty spaces, ignore the click.
+      return;
+    }
+    CardElements.transferCard(
+      pointer.target,
+      handElements.cardEleAt(targetIndices[0])
+    );
+  }
+  // Enable return button if more than 1 element in play area.
+  returnButton.disabled = playElements.getCardsLength() < 1;
+  // Enable accept button if 5 cards have been played.
+  acceptButton.disabled = playElements.getCardsLength() !== 5;
+
+  if (playElements.getCardsLength() === 5) {
+    // If 5 cards have been played, calculate score and display message.
+    updateBattleInfo(playElements.calculateScore());
+  } else {
+    // Otherwise, revert to default message and clear damage value.
+    updateBattleInfo([0, turnMessages[turn]]);
+  }
 }
 
 // ----- Event Listening -----
@@ -725,6 +803,7 @@ playArea.addEventListener("dragover", (pointer) => {
 });
 playArea.addEventListener("drop", dragDrop);
 playArea.addEventListener("dragend", dragEnd);
+playArea.addEventListener("click", cardClick);
 
 // - Player Hand Area -
 handArea.addEventListener("dragstart", dragStart);
@@ -733,6 +812,7 @@ handArea.addEventListener("dragover", (pointer) => {
 });
 handArea.addEventListener("drop", dragDrop);
 handArea.addEventListener("dragend", dragEnd);
+handArea.addEventListener("click", cardClick);
 
 // ----- Debug Functions -----
 function generateRF() {
