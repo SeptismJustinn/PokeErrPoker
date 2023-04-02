@@ -687,8 +687,9 @@ function returnCard() {
       handElements.cardEleAt(emptyHand[i])
     );
   }
-  // Since all elements returned, disable return button.
-  returnButton.disabled;
+  // Since all elements returned, disable return button and restore default turn message.
+  returnButton.disabled = true;
+  updateBattleInfo([0, turnMessages[turn]]);
 }
 
 // Sort button function to sort player hand.
