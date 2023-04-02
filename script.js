@@ -594,6 +594,19 @@ function updateBattleInfo(infoArr) {
   battleText.innerText = infoArr[1];
 }
 
+// Function to update comptuer move value.
+function updateCPUInfo(roll) {
+  computerValue.innerText = roll;
+}
+
+/* Function to generate CPU move value. Returns at least 10 move value.
+Math.random transformed exponentially to make it less likely to roll high numbers.
+*/
+function rollCPU() {
+  const roll = Math.round(Math.random() ** 3 * 50);
+  return roll >= 10 ? roll : 10;
+}
+
 // --- Button Functions ---
 // Start game function, initialize game, disables start button and enables the others.
 function startGame() {
@@ -609,6 +622,7 @@ function startGame() {
     computerTurn.classList.remove("inactive-info");
     battleText.innerText = "You have the first attack!";
     playedValue.innerText = 0;
+    updateCPUInfo(rollCPU());
   }, 100);
   startButton.disabled = true;
 }
@@ -815,7 +829,7 @@ handArea.addEventListener("drop", dragDrop);
 handArea.addEventListener("dragend", dragEnd);
 handArea.addEventListener("click", cardClick);
 
-// ----- Debug Functions -----
+//#region ----- Debug Functions -----
 function generateRF() {
   playElements.cards = ["e01", "e10", "e11", "e12", "e13"];
   playElements.syncCardEle();
@@ -850,3 +864,22 @@ function generateFlush() {
   playElements.cards = ["e08", "e10", "e11", "e12", "e13"];
   playElements.syncCardEle();
 }
+
+function testRoll() {
+  let lo = 0;
+  let me = 0;
+  let hi = 0;
+  let roll;
+  for (let i = 0; i < 100; i++) {
+    roll = rollCPU();
+    if (roll === 10) {
+      lo++;
+    } else if (roll > 33) {
+      hi++;
+    } else {
+      me++;
+    }
+  }
+  console.log(`${hi} greater than 33 rolls, ${me} 11-33 rolls, ${lo} 10 rolls`);
+}
+//#endregion
