@@ -14,7 +14,9 @@ let restartConfirm = false;
 // Variable to store battle-text before restart.
 let preRestartMessage = "";
 // Variable to store dragged element.
-let dragged;
+let dragged = "";
+// Boolean switch to check if game over.
+let gameover = false;
 
 // --- Elements to listen to ---
 // - Buttons -
@@ -43,6 +45,7 @@ const computerImg = document.querySelector("#computer-image");
 // Prepare for game start.
 function initialize() {
   turn = 0;
+  gameover = false;
   playElements.initialize();
   handElements.initialize();
   humanPlayer.initialize();
@@ -582,6 +585,7 @@ class Character {
   initialize() {
     this.healthCounter.innerText = this.maxHealth;
     this.healthBar.style.width = "100%";
+    this.damageBar.style.width = "100%";
     this.alive = true;
   }
 }
@@ -674,11 +678,14 @@ function checkDed() {
   } else if (!computerPlayer.alive) {
     gameWin(true);
     return true;
+  } else {
+    return false;
   }
 }
 
 function gameWin(winCheck) {
   // Remove numeric battle-info elements.
+  gameover = true;
   versus.classList.add("inactive-info");
   playedValue.classList.add("inactive-info");
   playerTurn.classList.add("inactive-info");
@@ -809,19 +816,20 @@ function progressTurn() {
       // Consolidate health bars.
       humanPlayer.updateDamage();
       computerPlayer.updateDamage();
-      turn++;
-      battleText.innerText = turnMessages[turn];
-      // Update CPU move value and reset player move value.
-      updateCPUInfo(rollCPU());
-      playedValue.innerText = 0;
-      // Swap turns around.
-      swapTurn();
       // Clear play area.
       playElements.initialize();
-      // Refill hand.
-      handElements.draw(5);
       if (checkDed()) {
         clearTimeout(acceptDelay);
+      } else {
+        turn++;
+        battleText.innerText = turnMessages[turn];
+        // Update CPU move value and reset player move value.
+        updateCPUInfo(rollCPU());
+        playedValue.innerText = 0;
+        // Swap turns around.
+        swapTurn();
+        // Refill hand.
+        handElements.draw(5);
       }
       break;
     case 2:
@@ -844,19 +852,20 @@ function progressTurn() {
     case 3:
       humanPlayer.updateDamage();
       computerPlayer.updateDamage();
-      turn = 0;
-      battleText.innerText = turnMessages[turn];
-      // Update CPU move value and reset player move value.
-      updateCPUInfo(rollCPU());
-      playedValue.innerText = 0;
-      // Swap turns around.
-      swapTurn();
       // Clear play area.
       playElements.initialize();
-      // Refill hand.
-      handElements.draw(5);
       if (checkDed()) {
         clearTimeout(acceptDelay);
+      } else {
+        turn = 0;
+        battleText.innerText = turnMessages[turn];
+        // Update CPU move value and reset player move value.
+        updateCPUInfo(rollCPU());
+        playedValue.innerText = 0;
+        // Swap turns around.
+        swapTurn();
+        // Refill hand.
+        handElements.draw(5);
       }
       break;
   }
@@ -891,6 +900,9 @@ Pop filoQueue from end if return button is hit.
 */
 function dragStart(pointer) {
   // Bind dragged element to dragged variable.
+  if (pointer.target.classList.contains("inactive-card")) {
+    return;
+  }
   dragged = pointer.target;
 }
 
@@ -898,7 +910,7 @@ function dragStart(pointer) {
 function dragDrop(pointer) {
   pointer.preventDefault();
   // If card was dragged out of an area then returned to the exact same area, ignore the move.
-  if (pointer.target === dragged) {
+  if (pointer.target === dragged || dragged === "") {
     return;
   }
   // Otherwise, obtain dropped target's classList
@@ -971,6 +983,9 @@ function cardClick(pointer) {
   if (playElements.getCardsLength() === 5) {
     // If 5 cards have been played, calculate score and display message.
     updateBattleInfo(playElements.calculateScore());
+  } else if (gameover) {
+    // Do nothing if game is over, this flag prevents calling updateBattleInfo.
+    return;
   } else {
     // Otherwise, revert to default message and clear damage value.
     updateBattleInfo([0, turnMessages[turn]]);
