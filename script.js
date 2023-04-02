@@ -764,7 +764,10 @@ function dragEnd() {
 // On card click, move card to available empty slots, ignore otherwise.
 function cardClick(pointer) {
   const targetList = pointer.target.classList;
-  if (targetList.contains("player-hand-card")) {
+  if (targetList.contains("inactive-card")) {
+    // Ignore move if inactive card clicked.
+    return;
+  } else if (targetList.contains("player-hand-card")) {
     // If player hand card is clicked, check for empty spaces in play area.
     const targetIndices = playElements.getEmptyInd();
     if (targetIndices.length === 0) {
