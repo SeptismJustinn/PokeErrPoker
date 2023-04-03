@@ -29,12 +29,14 @@ const returnButton = document.querySelector("#return-move-button");
 const sortButton = document.querySelector("#sort-hand-button");
 
 // - Texts -
+const damageInfo = document.querySelector("#damage-info");
 const battleText = document.querySelector("#battle-text");
 const playedValue = document.querySelector("#played-value");
 const computerValue = document.querySelector("#computer-value");
 const playerTurn = document.querySelector("#player-turn");
 const computerTurn = document.querySelector("#computer-turn");
 const versus = document.querySelector("#versus");
+const difficultyText = document.querySelector("#difficulty");
 
 // - Card Areas -
 const playArea = document.querySelector("#play-area");
@@ -704,6 +706,28 @@ function gameWin(winCheck) {
 }
 
 // --- Button Functions ---
+// Sets difficulty of the game, then removes the buttons. To attach to play area before 1st game.
+function setDifficulty(pointer) {
+  // Pointer default action seems to remove grid.
+  pointer.preventDefault();
+  if (pointer.target.id === "easy-button") {
+    // Easy difficulty set.
+    diffExponent = 3;
+    difficultyText.innerText = "Easy";
+  } else if (pointer.target.id === "norm-button") {
+    // Default difficulty set.
+    diffExponent = 2;
+    difficultyText.innerText = "Normal";
+  } else if (pointer.target.id === "hard-button") {
+    // Hard difficulty set.
+    diffExponent = 1;
+    difficultyText.innerText = "Hard";
+  } else {
+    // Do nothing more if none of the difficulty buttons are clicked.
+    return;
+  }
+}
+
 // Start game function, initialize game, disables start button and enables the others.
 function startGame() {
   initialize();
@@ -1018,6 +1042,7 @@ acceptButton.addEventListener("click", progressTurn);
 // To-Do, have restart button pause return button functionality, to then use return button to revert from restartConfirm = true
 returnButton.addEventListener("click", returnCard);
 sortButton.addEventListener("click", sortHand);
+damageInfo.addEventListener("click", setDifficulty);
 
 // --- Card Listeners ---
 // - Play Area -
