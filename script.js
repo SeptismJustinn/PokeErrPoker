@@ -782,7 +782,7 @@ function cancelRestart() {
     computerValue.classList.remove("inactive-info");
     computerTurn.classList.remove("inactive-info");
   }
-  if (playElements.getCardsLength().length < 1) {
+  if (playElements.getCardsLength() < 1) {
     // Disabled return button if no cards have been played, as it should be in this case.
     returnButton.disabled = true;
   }
