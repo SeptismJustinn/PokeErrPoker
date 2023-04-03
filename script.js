@@ -942,9 +942,11 @@ function dragStart(pointer) {
   // Bind dragged element to dragged variable.
   if (
     pointer.target.classList.contains("inactive-card") ||
-    !pointer.target.classList.contains("play-area-card") ||
-    !pointer.target.classList.contains("player-hand-card")
+    (!pointer.target.classList.contains("play-area-card") &&
+      !pointer.target.classList.contains("player-hand-card"))
   ) {
+    // Prevents dragging of inactive cards.
+    // Also will not drag if element is not a play area card and not a player hand card.
     return;
   }
   dragged = pointer.target;
