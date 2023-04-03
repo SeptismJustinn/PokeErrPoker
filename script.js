@@ -887,8 +887,9 @@ function returnCard() {
       handElements.cardEleAt(emptyHand[i])
     );
   }
-  // Since all elements returned, disable return button and restore default turn message.
+  // Since all elements returned, disable return and accept button and restore default turn message.
   returnButton.disabled = true;
+  acceptButton.disabled = true;
   updateBattleInfo([0, turnMessages[turn]]);
 }
 
