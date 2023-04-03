@@ -17,6 +17,8 @@ let preRestartMessage = "";
 let dragged = "";
 // Boolean switch to check if game over.
 let gameover = true;
+// Var to control difficulty of computer.
+let diffExponent = 2;
 
 // --- Elements to listen to ---
 // - Buttons -
@@ -327,7 +329,7 @@ class CardElements {
           return [numSum + 5, "Handle Deflect!"];
         }
       } else {
-        // 10) High Card (no bonus) - 1 card
+        // 10) High Card (no bonus)
         if (turn === 0) {
           return [numSum, "Slash!"];
         } else {
@@ -631,12 +633,13 @@ function updateCPUInfo(roll) {
   computerValue.innerText = roll;
 }
 
-/* Function to generate CPU move value. Returns at least 10 move value.
+/* Function to generate CPU move value.
 Math.random transformed exponentially to make it less likely to roll high numbers.
+Minimum move value is 20, since the lowest possible value players can play is high card for 16.
 */
 function rollCPU() {
-  const roll = Math.round(Math.random() ** 3 * 50);
-  return roll >= 10 ? roll : 10;
+  const roll = Math.round(Math.random() ** diffExponent * 50);
+  return roll >= 20 ? roll : 20;
 }
 
 // Function for juggling turns around. If player attacked last turn, they are defending now and vice versa for computer.
