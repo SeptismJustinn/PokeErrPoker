@@ -107,16 +107,6 @@ class CardElements {
     return this.cardArr[ind];
   }
 
-  // Add cardStr to cards array.
-  pushCardStr(cardStr) {
-    for (let i = 0; i < this.cards.length; i++) {
-      if (this.cards[i] === "") {
-        this.cards[i] = cardStr;
-        break;
-      }
-    }
-  }
-
   // Function to update number on card.
   printNum(cardEle, cardNum) {
     switch (cardNum) {
@@ -487,7 +477,7 @@ class CardElements {
 
   // Prepare for new game.
   initialize() {
-    this.cards = ["", "", "", "", ""];
+    this.cards.fill("");
     // Reset all cards to inactive, remove numbers and suit elements.
     for (let i = 0; i < this.cardArr.length; i++) {
       this.updateCardEle(i);
@@ -512,6 +502,7 @@ class PlayerCardElements extends CardElements {
   */
   draw(amt) {
     if (amt <= 0) {
+      // Once no more cards left to be added, sync up cardStr and cardEle arrays.
       this.syncCardEle();
       return;
     }
@@ -528,15 +519,15 @@ class PlayerCardElements extends CardElements {
     }
     // Concatenate to suit string.
     card += numb;
-    // Add card to Player hand.
-    this.pushCardStr(card);
+    // Add card string to first available slot.
+    for (let i = 0; i < this.cards.length; i++) {
+      if (this.cards[i] === "") {
+        this.cards[i] = card;
+        break;
+      }
+    }
     // Recurse
     this.draw(amt - 1);
-  }
-
-  initialize() {
-    super.initialize();
-    this.cards = ["", "", "", "", "", "", "", "", "", ""];
   }
 }
 
