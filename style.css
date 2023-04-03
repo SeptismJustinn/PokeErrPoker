@@ -253,9 +253,14 @@ button:disabled {
     max-width: 1000px;
     max-height: 600px;
   }
+
   #game-space {
     max-width: 1000px;
     max-height: 400px;
+  }
+
+  .play-text {
+    font-size: 36px;
   }
 
   .player-controlled {

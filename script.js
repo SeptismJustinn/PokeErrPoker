@@ -852,7 +852,7 @@ function progressTurn() {
           turnMessages[1]
         }`;
       } else {
-        battleText.innerText = `Your defence negates Err's attack! ${turnMessages[1]}`;
+        battleText.innerText = `You negate Err's attack! ${turnMessages[1]}`;
       }
       // Temporarily disable accept button to give reading time.
       acceptButton.disabled = true;
