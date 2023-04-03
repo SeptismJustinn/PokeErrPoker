@@ -1,4 +1,3 @@
-/* REMINDER! Remove borders when styling, unless borders are to be left in. */
 body {
   max-width: 1200px;
   max-height: 720px;
@@ -12,6 +11,30 @@ body {
   margin: 20px auto;
   grid-template-columns: 25% 50% 25%;
   grid-template-rows: 92% 8%;
+}
+
+.player-controlled {
+  display: grid;
+  width: 1200px;
+  height: 200px;
+  margin: 0 auto;
+  grid-template-columns: 10% 80% 10%;
+}
+
+.player-hand-card,
+.play-area-card,
+.inactive-card {
+  border: 2px solid black;
+  border-radius: 5px;
+  height: 120px;
+  width: 80px;
+  font-size: 40px;
+  text-align: center;
+  cursor: pointer;
+  background-color: white;
+  background-repeat: no-repeat;
+  background-position: 50% 70%;
+  background-size: 50%;
 }
 
 .char-area {
@@ -160,14 +183,6 @@ body {
   justify-self: end;
 }
 
-.player-controlled {
-  display: grid;
-  width: 1200px;
-  height: 200px;
-  margin: 0 auto;
-  grid-template-columns: 10% 80% 10%;
-}
-
 .game-state-button,
 .player-hand-button {
   width: 80%;
@@ -229,24 +244,47 @@ button:disabled {
   background-color: burlywood;
 }
 
-.player-hand-card,
-.play-area-card,
-.inactive-card {
-  border: 2px solid black;
-  border-radius: 5px;
-  height: 120px;
-  width: 80px;
-  font-size: 40px;
-  text-align: center;
-  cursor: pointer;
-  background-color: white;
-  background-repeat: no-repeat;
-  background-position: 50% 70%;
-  background-size: 50%;
-}
-
 #area-one {
   grid-column: 2/3;
+}
+
+@media screen and (max-height: 720px) {
+  body {
+    max-width: 1000px;
+    max-height: 600px;
+  }
+  #game-space {
+    max-width: 1000px;
+    max-height: 400px;
+  }
+
+  .player-controlled {
+    max-width: 1000px;
+    max-height: 140px;
+  }
+
+  .player-hand-card,
+  .play-area-card,
+  .inactive-card {
+    height: 100px;
+    width: 70px;
+    background-position: 50% 80%;
+  }
+
+  .game-state-button,
+  .player-hand-button {
+    width: 80%;
+    height: 80%;
+    font-size: 16px;
+    text-align: center;
+    margin: 5px auto;
+    cursor: pointer;
+  }
+
+  #player-image,
+  #computer-image {
+    max-width: 100%;
+  }
 }
 
 .earth {

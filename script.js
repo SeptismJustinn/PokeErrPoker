@@ -16,7 +16,7 @@ let preRestartMessage = "";
 // Variable to store dragged element.
 let dragged = "";
 // Boolean switch to check if game over.
-let gameover = false;
+let gameover = true;
 
 // --- Elements to listen to ---
 // - Buttons -
@@ -954,6 +954,10 @@ function dragEnd() {
 
 // On card click, move card to available empty slots, ignore otherwise.
 function cardClick(pointer) {
+  if (gameover) {
+    // If game is not in progress, do nothing. Prevents start menu clicks.
+    return;
+  }
   const targetList = pointer.target.classList;
   if (targetList.contains("inactive-card")) {
     // Ignore move if inactive card clicked.
