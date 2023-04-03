@@ -79,7 +79,6 @@ body {
 #damage-info {
   display: grid;
   grid-template-columns: 45% 10% 45%;
-  grid-template-rows: 20% 80%;
   align-items: center;
   justify-items: center;
 }

@@ -708,8 +708,6 @@ function gameWin(winCheck) {
 // --- Button Functions ---
 // Sets difficulty of the game, then removes the buttons. To attach to play area before 1st game.
 function setDifficulty(pointer) {
-  // Pointer default action seems to remove grid.
-  pointer.preventDefault();
   if (pointer.target.id === "easy-button") {
     // Easy difficulty set.
     diffExponent = 3;
@@ -726,6 +724,14 @@ function setDifficulty(pointer) {
     // Do nothing more if none of the difficulty buttons are clicked.
     return;
   }
+}
+
+// Function called upon first start button click, to remove difficulty buttons.
+function removeDiffButtons() {
+  document.querySelector("#easy-button").remove();
+  document.querySelector("#norm-button").remove();
+  document.querySelector("#hard-button").remove();
+  damageInfo.removeEventListener("click", setDifficulty);
 }
 
 // Start game function, initialize game, disables start button and enables the others.
@@ -1037,6 +1043,7 @@ function cardClick(pointer) {
 // ----- Event Listening -----
 // --- Menu Buttons ---
 startButton.addEventListener("click", startGame);
+startButton.addEventListener("click", removeDiffButtons, { once: true });
 restartButton.addEventListener("click", confirmRestart);
 acceptButton.addEventListener("click", progressTurn);
 // To-Do, have restart button pause return button functionality, to then use return button to revert from restartConfirm = true
