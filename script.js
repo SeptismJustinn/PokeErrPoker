@@ -684,16 +684,18 @@ function gameWin(winCheck) {
   computerTurn.classList.add("inactive-info");
   acceptButton.disabled = true;
   sortButton.disabled = true;
+  restartButton.disabled = true;
+  startButton.disabled = false;
   handElements.initialize();
   if (winCheck) {
     // Player wins.
     battleText.innerText =
-      "You win! Err is slain!\nRestart to challenge Err again!";
+      "You win! Err is slain!\nStart to challenge Err again!";
     computerImg.src = "ErrV1-down.png";
   } else {
     // Computer wins
     battleText.innerText =
-      "You are defeated,\nErr rampages along...\nRestart to try again";
+      "You are defeated,\nErr rampages along...\nStart to try again";
     playerImg.src = "PlayerV1-down.png";
   }
 }
@@ -1007,7 +1009,7 @@ function cardClick(pointer) {
 
 // ----- Event Listening -----
 // --- Menu Buttons ---
-startButton.addEventListener("click", startGame, { once: true });
+startButton.addEventListener("click", startGame);
 restartButton.addEventListener("click", confirmRestart);
 acceptButton.addEventListener("click", progressTurn);
 // To-Do, have restart button pause return button functionality, to then use return button to revert from restartConfirm = true
