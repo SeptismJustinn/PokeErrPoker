@@ -224,16 +224,16 @@ class CardElements {
     if (sameSuit) {
       switch (lastSuit) {
         case "e":
-          message = " of Earth!";
+          message = " of <span id='earth-text'>Earth</span>!";
           break;
         case "f":
-          message = " of Fire!";
+          message = " of <span id='fire-text'>Fire</span>!";
           break;
         case "s":
-          message = " of Storm!";
+          message = " of <span id='storm-text'>Storm</span>!";
           break;
         case "w":
-          message = " of Water!";
+          message = " of <span id='water-text'>Water</span>!";
           break;
       }
       if (
@@ -627,7 +627,7 @@ const computerPlayer = new Character(
 // Function to update battle-info based on array returned by CardElements.calculateScore().
 function updateBattleInfo(infoArr) {
   playedValue.innerText = infoArr[0];
-  battleText.innerText = infoArr[1];
+  battleText.innerHTML = infoArr[1];
 }
 
 // Function to update comptuer move value.
@@ -1071,13 +1071,19 @@ handArea.addEventListener("dragend", dragEnd);
 handArea.addEventListener("click", cardClick);
 
 //#region ----- Debug Functions -----
-function generateRF() {
-  playElements.cards = ["e01", "e10", "e11", "e12", "e13"];
+function generateRF(char = "e") {
+  playElements.cards = [
+    char + "01",
+    char + "10",
+    char + "11",
+    char + "12",
+    char + "13",
+  ];
   playElements.syncCardEle();
 }
 
 function generateSF() {
-  playElements.cards = ["e09", "e10", "e11", "e12", "e13"];
+  playElements.cards = ["s09", "s10", "s11", "s12", "s13"];
   playElements.syncCardEle();
 }
 

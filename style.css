@@ -308,6 +308,22 @@ button:disabled {
   background-image: url("blue.png");
 }
 
+#earth-text {
+  color: rgb(175, 125, 50);
+}
+
+#fire-text {
+  color: rgb(200, 50, 50);
+}
+
+#storm-text {
+  color: rgb(25, 150, 25);
+}
+
+#water-text {
+  color: rgb(50, 50, 200);
+}
+
 .inactive-card {
   border-color: rgba(0, 0, 0, 0);
   background-color: rgba(100, 100, 100, 0.2);
