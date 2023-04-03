@@ -19,6 +19,9 @@ let dragged = "";
 let gameover = true;
 // Var to control difficulty of computer.
 let diffExponent = 2;
+// Store character images directory for easier reference.
+const playerImgDir = "CharacterImages/Player";
+const computerImgDir = "CharacterImages/Err";
 
 // --- Elements to listen to ---
 // - Buttons -
@@ -54,8 +57,8 @@ function initialize() {
   handElements.initialize();
   humanPlayer.initialize();
   computerPlayer.initialize();
-  playerImg.src = "PlayerV1.png";
-  computerImg.src = "ErrV1.png";
+  playerImg.src = playerImgDir + "V1-attackprepare.png";
+  computerImg.src = computerImgDir + "V1.png";
   if (playerTurn.classList.contains("block-text")) {
     swapTurn();
   }
@@ -696,12 +699,13 @@ function gameWin(winCheck) {
     // Player wins.
     battleText.innerText =
       "You win! Err is slain!\nStart to challenge Err again!";
-    computerImg.src = "ErrV1-down.png";
+    computerImg.src = computerImgDir + "V1-down.png";
+    playerImg.src = playerImgDir + "V1.png";
   } else {
     // Computer wins
     battleText.innerText =
       "You are defeated,\nErr rampages along...\nStart to try again";
-    playerImg.src = "PlayerV1-down.png";
+    playerImg.src = playerImgDir + "V1-down.png";
   }
 }
 
@@ -829,6 +833,8 @@ function progressTurn() {
       // Net value of move after deducting player attack from computer defence. To be passed into updateHealth.
       netMoveValue =
         Number(computerValue.innerText) - Number(playedValue.innerText);
+      // Change player image to attacking
+      playerImg.src = playerImgDir + "V1-attacking.png";
       if (netMoveValue < 0) {
         // If player does more damage than computer defence,
         computerPlayer.updateHealth(netMoveValue);
@@ -854,6 +860,8 @@ function progressTurn() {
         // If game end, don't need to change innerText.
         return;
       } else {
+        // Change player image to prepare defence
+        playerImg.src = playerImgDir + "V1.png";
         turn++;
         battleText.innerText = turnMessages[turn];
         // Update CPU move value and reset player move value.
@@ -871,6 +879,8 @@ function progressTurn() {
       // Net value of move after deducting computer attack from player defence. To be passed into updateHealth.
       netMoveValue =
         Number(playedValue.innerText) - Number(computerValue.innerText);
+      //Change player image to defending
+      playerImg.src = playerImgDir + "V1-defending.png";
       if (netMoveValue < 0) {
         // If player does more damage than computer defence,
         humanPlayer.updateHealth(netMoveValue);
@@ -896,6 +906,8 @@ function progressTurn() {
         // If game end, don't need to change innerText.
         return;
       } else {
+        // Change player image to prepare defence
+        playerImg.src = playerImgDir + "V1-attackprepare.png";
         turn = 0;
         battleText.innerText = turnMessages[turn];
         // Update CPU move value and reset player move value.
