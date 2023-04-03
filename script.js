@@ -790,11 +790,11 @@ function cancelRestart() {
 
 // Accept button function to progress to the next turn, based on let turn variable.
 function progressTurn() {
-  // Temporarily disable accept button to give reading time.
+  /* Disable acceptButton. Accept button is re-enabled after a short time during turns 0 and 2,
+  allowing player to read the text. For turns 1 and 3, button remains disabled since playElements
+  is cleared and should not be re-enabled without cards played.
+  */
   acceptButton.disabled = true;
-  const acceptDelay = setTimeout(() => {
-    acceptButton.disabled = false;
-  }, 500);
   let netMoveValue = 0;
   switch (turn) {
     case 0:
@@ -812,6 +812,10 @@ function progressTurn() {
       } else {
         battleText.innerText = `Err shrugs off your attack! ${turnMessages[1]}`;
       }
+
+      setTimeout(() => {
+        acceptButton.disabled = false;
+      }, 500);
       turn++;
       break;
     case 1:
@@ -821,7 +825,8 @@ function progressTurn() {
       // Clear play area.
       playElements.initialize();
       if (checkDed()) {
-        clearTimeout(acceptDelay);
+        // If game end, don't need to change innerText.
+        return;
       } else {
         turn++;
         battleText.innerText = turnMessages[turn];
@@ -849,6 +854,11 @@ function progressTurn() {
       } else {
         battleText.innerText = `Your defence negates Err's attack! ${turnMessages[1]}`;
       }
+      // Temporarily disable accept button to give reading time.
+      acceptButton.disabled = true;
+      setTimeout(() => {
+        acceptButton.disabled = false;
+      }, 500);
       turn++;
       break;
     case 3:
@@ -857,7 +867,8 @@ function progressTurn() {
       // Clear play area.
       playElements.initialize();
       if (checkDed()) {
-        clearTimeout(acceptDelay);
+        // If game end, don't need to change innerText.
+        return;
       } else {
         turn = 0;
         battleText.innerText = turnMessages[turn];
