@@ -45,7 +45,8 @@ body {
 }
 
 #player-area,
-#player-image {
+#player-image,
+#help-section {
   grid-area: 1/1/2/2;
 }
 
@@ -56,11 +57,79 @@ body {
 
 #player-image {
   z-index: 1;
-  margin: 90% 10% 10% 20%;
+  margin: 60% 10% 10% 20%;
 }
 
 #computer-image {
   margin: 30% auto;
+}
+
+#help-section {
+  z-index: 2;
+  position: relative;
+}
+
+#help-text {
+  margin: 10px;
+}
+
+#help-text,
+#combination-text {
+  padding: 10px;
+  height: fit-content;
+  border: 2px solid black;
+  background-color: white;
+  transition: all 0.5s;
+  border-radius: 10px;
+}
+
+#help-text ul,
+#combination-text ol {
+  list-style-position: inside;
+  margin-block-start: 0.5em;
+  padding-inline-start: 0;
+  margin-inline-start: 0;
+}
+
+.help-text-bold {
+  font-weight: bold;
+}
+
+.help-text-card {
+  color: darkgreen;
+  background-color: rgb(200, 255, 200);
+}
+
+@keyframes rainbow-text {
+  25% {
+    color: darkred;
+  }
+  50% {
+    color: darkgreen;
+  }
+  75% {
+    color: darkblue;
+  }
+  100% {
+    color: darkgoldenrod;
+  }
+}
+
+.help-text-special {
+  color: darkgoldenrod;
+  animation: linear infinite 4s rainbow-text;
+}
+
+#combination-text {
+  position: absolute;
+  left: 110%;
+  top: 45%;
+  width: 150%;
+}
+
+.help-hide {
+  opacity: 0;
+  visibility: hidden;
 }
 
 #info-space {
@@ -306,6 +375,32 @@ button:disabled {
 
 .water {
   background-image: url("blue.png");
+}
+
+@keyframes wildcard {
+  0% {
+    background-image: url("blue.png");
+  }
+  25% {
+    background-image: url("yellow.png");
+  }
+  50% {
+    background-image: url("red.png");
+  }
+  75% {
+    background-image: url("green.png");
+  }
+  100% {
+    background-image: url("blue.png");
+  }
+}
+
+.wild {
+  background-image: url("blue.png");
+  animation-name: wildcard;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }
 
 #earth-text {

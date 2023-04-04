@@ -9,13 +9,82 @@
   </head>
   <body>
     <div id="game-space">
+      <div id="help-section">
+        <button id="help-button">Help</button>
+        <div class="help-hide" id="help-text">
+          How to play:
+          <ul>
+            <li>
+              Deplete <span class="help-text-bold">Err's</span> health bar to
+              defeat it!
+            </li>
+            <li>
+              Turn alternates between
+              <span class="damage-text">attacking</span> and
+              <span class="block-text">defending</span>.
+            </li>
+            <li>
+              Choose 5 <span class="help-text-card">cards</span> to click or
+              drag to the play area in the center.
+            </li>
+            <li>
+              The combination of <span class="help-text-card">cards</span> you
+              choose determine the
+              <span class="help-text-bold">strength</span> of your move!
+            </li>
+            <li>
+              5 <span class="help-text-card">cards</span> of the
+              <span class="help-text-special">same suit</span> form
+              <span class="help-text-special help-text-bold">special</span>
+              moves!
+            </li>
+          </ul>
+          <button id="combination-button">Check Combinations</button>
+        </div>
+        <div class="help-hide" id="combination-text">
+          Hand (value): Cards needed
+          <ol>
+            <li>
+              Royal <span class="help-text-special">Force</span> (Fixed 200):
+              <span class="help-text-special help-text-bold">Same suit</span>, A
+              10 J Q K
+            </li>
+            <li>
+              Supreme <span class="help-text-special">Force</span> (+50):
+              <span class="help-text-special help-text-bold">Same suit</span>, 5
+              in a sequence
+            </li>
+            <li>Four of a kind (+40): 4 same numbers</li>
+            <li>
+              Full House (+30): 3 of a number and a pair of another number
+            </li>
+            <li>
+              <span class="help-text-special">Forces</span> (+25):
+              <span class="help-text-special help-text-bold">Same suit</span>,
+              any cards
+            </li>
+            <li>Straight (+20): 5 cards in a sequence</li>
+            <li>Three of a kind (+15): 3 same numbers</li>
+            <li>
+              Two Pairs(+10): Pair of same numbers and another pair of same
+              numbers
+            </li>
+            <li>Pair (+5): 2 same numbers</li>
+            <li>High Card (no bonus)</li>
+          </ol>
+        </div>
+      </div>
       <div class="char-area" id="player-area">You</div>
-      <img src="PlayerV1.png" alt="Player character" id="player-image" />
+      <img
+        src="CharacterImages/PlayerV1.png"
+        alt="Player character"
+        id="player-image"
+      />
       <div id="info-space">
         <div id="play-area">
-          <div class="play-area-card earth" id="area-one">P</div>
-          <div class="play-area-card fire" id="area-two">O</div>
-          <div class="play-area-card water" id="area-thr">K</div>
+          <div class="play-area-card water" id="area-one">P</div>
+          <div class="play-area-card storm" id="area-two">O</div>
+          <div class="play-area-card wild" id="area-thr">K</div>
           <div class="play-area-card fire" id="area-fou">E</div>
           <div class="play-area-card earth" id="area-fiv">R</div>
         </div>
@@ -43,7 +112,11 @@
         </div>
       </div>
       <div class="char-area" id="computer-area">Err</div>
-      <img src="ErrV1.png" alt="Err character" id="computer-image" />
+      <img
+        src="CharacterImages/ErrV1.png"
+        alt="Err character"
+        id="computer-image"
+      />
       <div class="health-counter" id="player-health-counter">100</div>
       <div class="health-bar" id="player-health-bar"></div>
       <div class="damage-bar" id="player-damage-bar"></div>

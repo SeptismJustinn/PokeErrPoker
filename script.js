@@ -1,10 +1,11 @@
 // ----- Global/Initial variables -----
 
 /* Suits based off classic elements
-"e" for Earth suit, "f" for Fire suit, "s" for Storm or air suit, "w" for Water suit.
+"e" for Earth suit, "f" for Fire suit, "s" for Storm or air suit, "w" for Water suit, 
+"a" for All suit or wildcards.
 */
-const suits = ["e", "f", "s", "w"];
-const suitsClasses = ["earth", "fire", "storm", "water"];
+const suits = ["a", "e", "f", "s", "w"];
+const suitsClasses = ["wild", "earth", "fire", "storm", "water"];
 // Turn alternates between 0: player turn > 1: between > 2: Computer turn > 1 > 0 and so on.
 let turn = 0;
 // Array of messages to display each turn.
@@ -19,6 +20,9 @@ let dragged = "";
 let gameover = true;
 // Var to control difficulty of computer.
 let diffExponent = 2;
+// Store character images directory for easier reference.
+const playerImgDir = "CharacterImages/Player";
+const computerImgDir = "CharacterImages/Err";
 
 // --- Elements to listen to ---
 // - Buttons -
@@ -27,6 +31,8 @@ const restartButton = document.querySelector("#restart-button");
 const acceptButton = document.querySelector("#accept-move-button");
 const returnButton = document.querySelector("#return-move-button");
 const sortButton = document.querySelector("#sort-hand-button");
+const helpButton = document.querySelector("#help-button");
+const combinationButton = document.querySelector("#combination-button");
 
 // - Texts -
 const damageInfo = document.querySelector("#damage-info");
@@ -37,6 +43,8 @@ const playerTurn = document.querySelector("#player-turn");
 const computerTurn = document.querySelector("#computer-turn");
 const versus = document.querySelector("#versus");
 const difficultyText = document.querySelector("#difficulty");
+const helpText = document.querySelector("#help-text");
+const combinationText = document.querySelector("#combination-text");
 
 // - Card Areas -
 const playArea = document.querySelector("#play-area");
@@ -54,8 +62,8 @@ function initialize() {
   handElements.initialize();
   humanPlayer.initialize();
   computerPlayer.initialize();
-  playerImg.src = "PlayerV1.png";
-  computerImg.src = "ErrV1.png";
+  playerImg.src = playerImgDir + "V1-attackprepare.png";
+  computerImg.src = computerImgDir + "V1.png";
   if (playerTurn.classList.contains("block-text")) {
     swapTurn();
   }
@@ -146,6 +154,12 @@ class CardElements {
       ele.classList.remove(cardSuit);
     }
     switch (cardStr.charAt(0)) {
+      case "a":
+        // Wildcard
+        ele.classList.remove("inactive-card");
+        ele.classList.add("wild");
+        this.printNum(ele, Number(cardStr.slice(-2)));
+        break;
       case "e":
         // Earth suit
         ele.classList.remove("inactive-card");
@@ -185,33 +199,47 @@ class CardElements {
   */
   calculateScore() {
     // Parse this.cards to get suits info and numbers.
+    // Flag for all same suits.
     let sameSuit = true;
+    // Flag for all wild cards.
+    let allWild = true;
     let lastSuit = "";
     // Message to indicated hand played.
     let message = "";
-    // Sum of card values played.
-    let numSum;
     const numberValues = [];
     // Iterate through first 5 cardStr.
     for (let i = 0; i < 5; i++) {
       // Check if any single card has a different suit from another, sameSuit = false if so.
+      const iSuit = this.cards[i].slice(0, 1);
       if (this.cards[i] === "") {
+        // Ignore inactive cards, can potentially adapt for playing fewer than 5 cards.
         continue;
       } else if (lastSuit === "") {
-        lastSuit = this.cards[i].slice(0, 1);
+        lastSuit = iSuit;
+        if (iSuit !== "a") {
+          allWild = false;
+        }
       } else {
-        if (this.cards[i].slice(0, 1) !== lastSuit) {
+        if (lastSuit === "a") {
+          // Wildcard does not disqualify same suit.
+          if (iSuit !== "a") {
+            allWild = false;
+            lastSuit = iSuit;
+          }
+        } else if (iSuit !== "a" && iSuit !== lastSuit) {
           sameSuit = false;
+          allWild = false;
         }
       }
       // Convert number portion of card string and push to array.
       numberValues.push(Number(this.cards[i].slice(1)));
     }
+    console.log(allWild);
     // Sort in numerical order.
     numberValues.sort((first, second) => first - second);
     // Check if sequential.
     let isSequence = true;
-    numSum = numberValues.reduce(
+    let numSum = numberValues.reduce(
       (accumulator, value) => accumulator + value,
       0
     );
@@ -223,6 +251,9 @@ class CardElements {
     }
     if (sameSuit) {
       switch (lastSuit) {
+        case "a":
+          message = " of <span id='wild-text'>Unity</span>!";
+          break;
         case "e":
           message = " of <span id='earth-text'>Earth</span>!";
           break;
@@ -244,25 +275,32 @@ class CardElements {
         numberValues.includes(13)
       ) {
         // 1) Royal Flush (200 flat) - Same suit, A 10 J Q K
-        return [200, "Royal Force" + message];
+        message = "Royal Force" + message;
+        numSum = 200;
       } else if (isSequence) {
         // 2) Straight Flush (bonus 50) - Same suit, 5 in a row.
-        return [numSum + 50, "Supreme Force" + message];
+        message = "Supreme Force" + message;
+        numSum += 50;
       } else {
         // 5) Flush (bonus 25) - Same suit, no sequence
-        return [numSum + 25, message.slice(4, -1) + " Force!"];
+        message = message.slice(4, -1) + " Force!";
+        numSum += 25;
       }
     } else if (isSequence) {
       // 6) Straight (bonus 20) - 5 in a row
       if (turn === 0) {
-        return [numSum + 20, "Impale!"];
+        message = "Impale!";
       } else {
-        return [numSum + 20, "Impede!"];
+        message = "Impede!";
       }
+      numSum += 20;
     } else {
+      // KV-pair, storing counts of card number
       const numCount = {};
       let numStr;
+      // Check counts of each number in numberValues.
       for (let i = 0; i < 5; i++) {
+        // Stringify numbers to use as keys in code.
         numStr = String(numberValues[i]);
         if (Object.keys(numCount).includes(numStr)) {
           numCount[numStr] += 1;
@@ -278,7 +316,9 @@ class CardElements {
       let pair = false;
       // Flag for 2 pairs.
       let pairOfPairs = false;
-      // Iterate through numCount values to look at number counts. Loops up to 5 times if 5 high cards input.
+      /* Iterate through numCount values to look at number counts. 
+         Loops up to 5 times if 5 high cards input.
+      */
       for (const num of Object.values(numCount)) {
         if (num >= 4) {
           fourOfAKind = true;
@@ -296,49 +336,56 @@ class CardElements {
       if (fourOfAKind) {
         // 3) Four of a kind (bonus 40)- 4 same numbers.
         if (turn === 0) {
-          return [numSum + 40, "Stab Flurry!"];
+          message = "Stab Flurry!";
         } else {
-          return [numSum + 40, "Spin Deflect!"];
+          message = "Spin Deflect!";
         }
+        numSum += 40;
       } else if (pairOfPairs) {
         // 8) Two Pairs - 2 same + 2 same (bonus 10)
         if (turn === 0) {
-          return [numSum + 10, "Double Stab!"];
+          message = "Double Stab!";
         } else {
-          return [numSum + 10, "Double Step!"];
+          message = "Double Step!";
         }
+        numSum += 10;
       } else if (threeOfAKind) {
         if (pair) {
           // 4) Full House - 3 same + 2 same (bonus 30)
           if (turn === 0) {
-            return [numSum + 30, "Full Impact!"];
+            message = "Full Impact!";
           } else {
-            return [numSum + 30, "Full Guard!"];
+            message = "Full Guard!";
           }
+          numSum += 30;
         } else {
           // 7) Three of a kind (bonus 15) - 3 same
           if (turn === 0) {
-            return [numSum + 15, "Triple Pierce!"];
+            message = "Triple Pierce!";
           } else {
-            return [numSum + 15, "Triple Jump!"];
+            message = "Triple Jump!";
           }
+          numSum += 15;
         }
       } else if (pair) {
         // 9) Pair (bonus 5)- 2 same
         if (turn === 0) {
-          return [numSum + 5, "Thrust!"];
+          message = "Thrust!";
         } else {
-          return [numSum + 5, "Handle Deflect!"];
+          message = "Handle Deflect!";
         }
+        numSum += 5;
       } else {
         // 10) High Card (no bonus)
         if (turn === 0) {
-          return [numSum, "Slash!"];
+          message = "Slash!";
         } else {
-          return [numSum, "Stand Firm!"];
+          message = "Stand Firm!";
         }
       }
     }
+    // If 5 wildcards were played, add a additional 10% damage.
+    return [allWild ? Math.round(numSum * 1.1) : numSum, message];
   }
 
   // Function to sync card string array with card elements array.
@@ -361,7 +408,9 @@ class CardElements {
       if (cardClassList.contains("inactive-card")) {
         this.cards[i] = "";
       } else {
-        if (cardClassList.contains("earth")) {
+        if (cardClassList.contains("wild")) {
+          cardString = "a";
+        } else if (cardClassList.contains("earth")) {
           cardString = "e";
         } else if (cardClassList.contains("fire")) {
           cardString = "f";
@@ -510,8 +559,18 @@ class PlayerCardElements extends CardElements {
       this.syncCardEle();
       return;
     }
-    // Randomize suit, generates 0 to 3.99...96, floored to 0 to 3.
-    let card = suits[Math.floor(Math.random() * 4)];
+    // Randomize suit, generates 0 to 4.99...95, floored to 0 to 4.
+    let card = suits[Math.floor(Math.random() * 5)];
+    // Based on difficulty (hard: 1, normal: 2, easy: 3), adjust rates of wildcards.
+    let iterationCounter = 3 - diffExponent;
+    while (iterationCounter > 0) {
+      if (card === "a" && Math.random() < 0.5) {
+        // Reduce chance of getting wildcard by half per iteration.
+        card = suits.slice(1)[Math.floor(Math.random() * 4)];
+      }
+      iterationCounter--;
+    }
+    //Result: 5% chance of wild card on Hard, 10% on Normal, 20% on Easy.
 
     /* Randomize card number, generates 0 to 11.99...988, 
        ceiling'd to 0 to 12, incremented to 1 to 13.
@@ -680,32 +739,49 @@ function checkDed() {
 }
 
 function gameWin(winCheck) {
-  // Remove numeric battle-info elements.
+  // Switch game progress off
   gameover = true;
+  // Remove numeric battle-info elements.
   versus.classList.add("inactive-info");
   playedValue.classList.add("inactive-info");
   playerTurn.classList.add("inactive-info");
   computerValue.classList.add("inactive-info");
   computerTurn.classList.add("inactive-info");
+  // Disable menu buttons.
   acceptButton.disabled = true;
   sortButton.disabled = true;
   restartButton.disabled = true;
   startButton.disabled = false;
+  // Empty hand, draw area already emptied during progressTurn before checkDed called.
   handElements.initialize();
   if (winCheck) {
     // Player wins.
     battleText.innerText =
       "You win! Err is slain!\nStart to challenge Err again!";
-    computerImg.src = "ErrV1-down.png";
+    computerImg.src = computerImgDir + "V1-down.png";
+    playerImg.src = playerImgDir + "V1.png";
   } else {
     // Computer wins
     battleText.innerText =
       "You are defeated,\nErr rampages along...\nStart to try again";
-    playerImg.src = "PlayerV1-down.png";
+    playerImg.src = playerImgDir + "V1-down.png";
   }
 }
 
 // --- Button Functions ---
+// Opens help menu or closes all help menus.
+function toggleHelp() {
+  helpText.classList.toggle("help-hide");
+  if (!combinationText.classList.contains("help-hide")) {
+    toggleComb();
+  }
+}
+
+// Toggles display of card combination menu.
+function toggleComb() {
+  combinationText.classList.toggle("help-hide");
+}
+
 // Sets difficulty of the game, then removes the buttons. To attach to play area before 1st game.
 function setDifficulty(pointer) {
   if (pointer.target.id === "easy-button") {
@@ -736,11 +812,15 @@ function removeDiffButtons() {
 
 // Start game function, initialize game, disables start button and enables the others.
 function startGame() {
+  // Empty card areas and reset values in script.
   initialize();
   setTimeout(() => {
+    // Fill hand with new cards.
     handElements.draw(10);
+    // Enable sort and restart button.
     sortButton.disabled = false;
     restartButton.disabled = false;
+    // Display battle-info.
     versus.classList.remove("inactive-info");
     playedValue.classList.remove("inactive-info");
     playerTurn.classList.remove("inactive-info");
@@ -748,8 +828,10 @@ function startGame() {
     computerTurn.classList.remove("inactive-info");
     battleText.innerText = "You have the first attack!";
     playedValue.innerText = 0;
+    // Roll value for computer move.
     updateCPUInfo(rollCPU());
   }, 100);
+  // Deactivate start button.
   startButton.disabled = true;
 }
 
@@ -829,6 +911,8 @@ function progressTurn() {
       // Net value of move after deducting player attack from computer defence. To be passed into updateHealth.
       netMoveValue =
         Number(computerValue.innerText) - Number(playedValue.innerText);
+      // Change player image to attacking
+      playerImg.src = playerImgDir + "V1-attacking.png";
       if (netMoveValue < 0) {
         // If player does more damage than computer defence,
         computerPlayer.updateHealth(netMoveValue);
@@ -854,6 +938,8 @@ function progressTurn() {
         // If game end, don't need to change innerText.
         return;
       } else {
+        // Change player image to prepare defence
+        playerImg.src = playerImgDir + "V1.png";
         turn++;
         battleText.innerText = turnMessages[turn];
         // Update CPU move value and reset player move value.
@@ -871,6 +957,8 @@ function progressTurn() {
       // Net value of move after deducting computer attack from player defence. To be passed into updateHealth.
       netMoveValue =
         Number(playedValue.innerText) - Number(computerValue.innerText);
+      //Change player image to defending
+      playerImg.src = playerImgDir + "V1-defending.png";
       if (netMoveValue < 0) {
         // If player does more damage than computer defence,
         humanPlayer.updateHealth(netMoveValue);
@@ -896,6 +984,8 @@ function progressTurn() {
         // If game end, don't need to change innerText.
         return;
       } else {
+        // Change player image to prepare defence
+        playerImg.src = playerImgDir + "V1-attackprepare.png";
         turn = 0;
         battleText.innerText = turnMessages[turn];
         // Update CPU move value and reset player move value.
@@ -1048,10 +1138,11 @@ startButton.addEventListener("click", startGame);
 startButton.addEventListener("click", removeDiffButtons, { once: true });
 restartButton.addEventListener("click", confirmRestart);
 acceptButton.addEventListener("click", progressTurn);
-// To-Do, have restart button pause return button functionality, to then use return button to revert from restartConfirm = true
 returnButton.addEventListener("click", returnCard);
 sortButton.addEventListener("click", sortHand);
 damageInfo.addEventListener("click", setDifficulty);
+helpButton.addEventListener("click", toggleHelp);
+combinationButton.addEventListener("click", toggleComb);
 
 // --- Card Listeners ---
 // - Play Area -
