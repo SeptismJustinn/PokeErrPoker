@@ -31,6 +31,7 @@ const restartButton = document.querySelector("#restart-button");
 const acceptButton = document.querySelector("#accept-move-button");
 const returnButton = document.querySelector("#return-move-button");
 const sortButton = document.querySelector("#sort-hand-button");
+const helpButton = document.querySelector("#help-button");
 
 // - Texts -
 const damageInfo = document.querySelector("#damage-info");
@@ -41,6 +42,7 @@ const playerTurn = document.querySelector("#player-turn");
 const computerTurn = document.querySelector("#computer-turn");
 const versus = document.querySelector("#versus");
 const difficultyText = document.querySelector("#difficulty");
+const helpText = document.querySelector("#help-text");
 
 // - Card Areas -
 const playArea = document.querySelector("#play-area");
@@ -557,10 +559,16 @@ class PlayerCardElements extends CardElements {
     }
     // Randomize suit, generates 0 to 4.99...95, floored to 0 to 4.
     let card = suits[Math.floor(Math.random() * 5)];
-    if (card === "a" && Math.random() < 0.5) {
-      // Reduce chance of getting wildcard to 0.2 * 0.5 = 0.1.
-      card = suits.slice(1)[Math.floor(Math.random() * 4)];
+    // Based on difficulty (hard: 1, normal: 2, easy: 3), adjust rates of wildcards.
+    let iterationCounter = 3 - diffExponent;
+    while (iterationCounter > 0) {
+      if (card === "a" && Math.random() < 0.5) {
+        // Reduce chance of getting wildcard by half per iteration.
+        card = suits.slice(1)[Math.floor(Math.random() * 4)];
+      }
+      iterationCounter--;
     }
+    //Result: 5% chance of wild card on Hard, 10% on Normal, 20% on Easy.
 
     /* Randomize card number, generates 0 to 11.99...988, 
        ceiling'd to 0 to 12, incremented to 1 to 13.
@@ -759,6 +767,11 @@ function gameWin(winCheck) {
 }
 
 // --- Button Functions ---
+// Opens help menu and activates combination help menu button.
+function toggleHelp() {
+  helpText.classList.toggle("help-hide");
+}
+
 // Sets difficulty of the game, then removes the buttons. To attach to play area before 1st game.
 function setDifficulty(pointer) {
   if (pointer.target.id === "easy-button") {
@@ -1115,10 +1128,10 @@ startButton.addEventListener("click", startGame);
 startButton.addEventListener("click", removeDiffButtons, { once: true });
 restartButton.addEventListener("click", confirmRestart);
 acceptButton.addEventListener("click", progressTurn);
-// To-Do, have restart button pause return button functionality, to then use return button to revert from restartConfirm = true
 returnButton.addEventListener("click", returnCard);
 sortButton.addEventListener("click", sortHand);
 damageInfo.addEventListener("click", setDifficulty);
+helpButton.addEventListener("click", toggleHelp);
 
 // --- Card Listeners ---
 // - Play Area -
