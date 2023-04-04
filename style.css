@@ -308,6 +308,32 @@ button:disabled {
   background-image: url("blue.png");
 }
 
+@keyframes wildcard {
+  0% {
+    background-image: url("blue.png");
+  }
+  25% {
+    background-image: url("yellow.png");
+  }
+  50% {
+    background-image: url("red.png");
+  }
+  75% {
+    background-image: url("green.png");
+  }
+  100% {
+    background-image: url("blue.png");
+  }
+}
+
+.wild {
+  background-image: url("blue.png");
+  animation-name: wildcard;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
 #earth-text {
   color: rgb(175, 125, 50);
 }
