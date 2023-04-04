@@ -222,7 +222,7 @@ class CardElements {
             allWild = false;
             lastSuit = iSuit;
           }
-        } else if (iSuit !== lastSuit) {
+        } else if (iSuit !== "a" && iSuit !== lastSuit) {
           sameSuit = false;
           allWild = false;
         }
@@ -557,6 +557,10 @@ class PlayerCardElements extends CardElements {
     }
     // Randomize suit, generates 0 to 4.99...95, floored to 0 to 4.
     let card = suits[Math.floor(Math.random() * 5)];
+    if (card === "a" && Math.random() < 0.5) {
+      // Reduce chance of getting wildcard to 0.2 * 0.5 = 0.1.
+      card = suits.slice(1)[Math.floor(Math.random() * 4)];
+    }
 
     /* Randomize card number, generates 0 to 11.99...988, 
        ceiling'd to 0 to 12, incremented to 1 to 13.
