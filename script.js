@@ -32,6 +32,7 @@ const acceptButton = document.querySelector("#accept-move-button");
 const returnButton = document.querySelector("#return-move-button");
 const sortButton = document.querySelector("#sort-hand-button");
 const helpButton = document.querySelector("#help-button");
+const combinationButton = document.querySelector("#combination-button");
 
 // - Texts -
 const damageInfo = document.querySelector("#damage-info");
@@ -43,6 +44,7 @@ const computerTurn = document.querySelector("#computer-turn");
 const versus = document.querySelector("#versus");
 const difficultyText = document.querySelector("#difficulty");
 const helpText = document.querySelector("#help-text");
+const combinationText = document.querySelector("#combination-text");
 
 // - Card Areas -
 const playArea = document.querySelector("#play-area");
@@ -770,6 +772,13 @@ function gameWin(winCheck) {
 // Opens help menu and activates combination help menu button.
 function toggleHelp() {
   helpText.classList.toggle("help-hide");
+  if (!combinationText.classList.contains("help-hide")) {
+    toggleComb();
+  }
+}
+
+function toggleComb() {
+  combinationText.classList.toggle("help-hide");
 }
 
 // Sets difficulty of the game, then removes the buttons. To attach to play area before 1st game.
@@ -1132,6 +1141,7 @@ returnButton.addEventListener("click", returnCard);
 sortButton.addEventListener("click", sortHand);
 damageInfo.addEventListener("click", setDifficulty);
 helpButton.addEventListener("click", toggleHelp);
+combinationButton.addEventListener("click", toggleComb);
 
 // --- Card Listeners ---
 // - Play Area -
