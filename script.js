@@ -769,7 +769,7 @@ function gameWin(winCheck) {
 }
 
 // --- Button Functions ---
-// Opens help menu and activates combination help menu button.
+// Opens help menu or closes all help menus.
 function toggleHelp() {
   helpText.classList.toggle("help-hide");
   if (!combinationText.classList.contains("help-hide")) {
@@ -777,6 +777,7 @@ function toggleHelp() {
   }
 }
 
+// Toggles display of card combination menu.
 function toggleComb() {
   combinationText.classList.toggle("help-hide");
 }
