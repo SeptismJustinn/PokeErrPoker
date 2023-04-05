@@ -1,8 +1,11 @@
+/* Based on 1366 x 768 screen resolution */
 body {
   max-width: 1200px;
   max-height: 720px;
   margin: 0 auto;
 }
+
+/* Top half of page */
 
 #game-space {
   display: grid;
@@ -64,6 +67,8 @@ body {
   margin: 30% auto;
 }
 
+/* Styling for help box */
+
 #help-section {
   z-index: 2;
   position: relative;
@@ -122,8 +127,8 @@ body {
 
 #combination-text {
   position: absolute;
-  left: 110%;
-  top: 45%;
+  left: 120%;
+  top: 42%;
   width: 150%;
 }
 
@@ -131,6 +136,8 @@ body {
   opacity: 0;
   visibility: hidden;
 }
+
+/* On-screen communicative elements */
 
 #info-space {
   grid-area: 1/2/3/3;
@@ -181,11 +188,6 @@ body {
 #computer-move {
   display: flex;
   justify-self: start;
-}
-
-.inactive-info {
-  color: rgba(0, 0, 0, 0);
-  background-color: rgba(0, 0, 0, 0);
 }
 
 .health-bar {
@@ -252,6 +254,8 @@ body {
   justify-self: end;
 }
 
+/* Bottom half of page */
+
 .game-state-button,
 .player-hand-button {
   width: 80%;
@@ -317,6 +321,7 @@ button:disabled {
   grid-column: 2/3;
 }
 
+/* Alternate sizing for smaller screens */
 @media screen and (max-height: 720px) {
   body {
     max-width: 1000px;
@@ -361,6 +366,7 @@ button:disabled {
   }
 }
 
+/* Card graphics */
 .earth {
   background-image: url("yellow.png");
 }
@@ -403,6 +409,8 @@ button:disabled {
   animation-timing-function: linear;
 }
 
+/* Text colourings */
+
 #earth-text {
   color: rgb(175, 125, 50);
 }
@@ -417,6 +425,13 @@ button:disabled {
 
 #water-text {
   color: rgb(50, 50, 200);
+}
+
+/* Priority styling (mainly for hiding elements) */
+
+.inactive-info {
+  color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .inactive-card {
