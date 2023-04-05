@@ -88,8 +88,7 @@ body {
   border-radius: 10px;
 }
 
-#help-text ul,
-#combination-text ol {
+#help-text ul {
   list-style-position: inside;
   margin-block-start: 0.5em;
   padding-inline-start: 0;
@@ -130,6 +129,12 @@ body {
   left: 120%;
   top: 42%;
   width: 150%;
+}
+
+#combination-text ol {
+  margin-block-start: 0.5em;
+  padding-inline-start: 1em;
+  margin-inline-start: 0;
 }
 
 .help-hide {

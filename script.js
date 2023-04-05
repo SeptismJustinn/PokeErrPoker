@@ -1082,36 +1082,79 @@ function dragEnd() {
   dragged = "";
 }
 
-// On card click, move card to available empty slots, ignore otherwise.
-function cardClick(pointer) {
+// Keyup listener generates keyboard events, which store a K-V pair (key : character pressed)
+function keyboardPress(pressEvent) {
+  // Check if numeric keys were pressed.
+  console.log(pressEvent);
+  let numberChk = Number(pressEvent.key);
+  if (Number.isNaN(numberChk) || pressEvent.key === " ") {
+    // If not number or if space bar was pressed (since " " converts to 0)
+    switch (pressEvent.key) {
+      case " ":
+        // Spacebar to accept move, if allowed to.
+        if (acceptButton.disabled === false) {
+          progressTurn();
+        }
+        break;
+      case "s":
+        // s key to sort hand.
+        sortHand();
+        break;
+      case "r":
+        // r key to return hand.
+        if (returnButton.disabled === false) {
+          returnCard();
+        }
+        break;
+    }
+  } else {
+    // Prepare numberChk to be used as an array index (from keyboard's 1-0 to array's 0-9)
+    if (numberChk === 0) {
+      numberChk = 9;
+    } else {
+      numberChk--;
+    }
+    cardChoose(handElements.cardEleAt(numberChk), false);
+  }
+}
+
+// On card click or keyup, move card to available empty slots, ignore otherwise.
+function cardChoose(pointer, mouse = true) {
   if (gameover) {
     // If game is not in progress, do nothing. Prevents start menu clicks.
     return;
   }
-  const targetList = pointer.target.classList;
+  let targetElement;
+  if (mouse) {
+    targetElement = pointer.target;
+  } else {
+    targetElement = pointer;
+  }
+  const targetList = targetElement.classList;
   if (targetList.contains("inactive-card")) {
     // Ignore move if inactive card clicked.
     return;
   } else if (targetList.contains("player-hand-card")) {
-    // If player hand card is clicked, check for empty spaces in play area.
+    // If player hand card is clicked or keypress, check for empty spaces in play area.
     const targetIndices = playElements.getEmptyInd();
     if (targetIndices.length === 0) {
       // If no empty spaces, ignore the click.
       return;
     }
     CardElements.transferCard(
-      pointer.target,
+      targetElement,
       playElements.cardEleAt(targetIndices[0])
     );
   } else if (targetList.contains("play-area-card")) {
     // If play area card is clicked, return to first empty space from the left.
+    // This part of the code should not run on keypress.
     const targetIndices = handElements.getEmptyInd();
     if (targetIndices.length === 0) {
       // If no empty spaces, ignore the click.
       return;
     }
     CardElements.transferCard(
-      pointer.target,
+      targetElement,
       handElements.cardEleAt(targetIndices[0])
     );
   }
@@ -1152,7 +1195,7 @@ playArea.addEventListener("dragover", (pointer) => {
 });
 playArea.addEventListener("drop", dragDrop);
 playArea.addEventListener("dragend", dragEnd);
-playArea.addEventListener("click", cardClick);
+playArea.addEventListener("click", cardChoose);
 
 // - Player Hand Area -
 handArea.addEventListener("dragstart", dragStart);
@@ -1161,7 +1204,10 @@ handArea.addEventListener("dragover", (pointer) => {
 });
 handArea.addEventListener("drop", dragDrop);
 handArea.addEventListener("dragend", dragEnd);
-handArea.addEventListener("click", cardClick);
+handArea.addEventListener("click", cardChoose);
+
+// - Keyboard -
+document.addEventListener("keyup", keyboardPress);
 
 //#region ----- Debug Functions -----
 function generateRF(char = "e") {
