@@ -3,6 +3,10 @@ body {
   max-width: 1200px;
   max-height: 720px;
   margin: 0 auto;
+  background-image: url("background.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-size: 100%;
 }
 
 /* Top half of page */
@@ -45,6 +49,8 @@ body {
   text-align: center;
   font-size: 50px;
   font-weight: bold;
+  border-radius: 50px 50px 0 0;
+  height: 500px;
 }
 
 #player-area,
@@ -183,6 +189,12 @@ body {
   text-align: center;
 }
 
+#battle-text {
+  background-color: antiquewhite;
+  padding: 10px;
+  border-radius: 10px;
+}
+
 .damage-text {
   background-color: rgb(255, 200, 200);
   color: darkred;
@@ -206,6 +218,12 @@ body {
 #computer-move {
   display: flex;
   justify-self: start;
+}
+
+#played-move,
+#computer-move {
+  border-radius: 20px;
+  padding: 0.2em;
 }
 
 .health-bar {
@@ -287,18 +305,22 @@ body {
 .game-state-controls {
   grid-column: 1/2;
   display: grid;
-  grid-template-rows: 5% 50% 20% 20% 5%;
+  grid-template-rows: 5% 30% 20% 20% 20% 5%;
   align-items: center;
   background-color: brown;
   border-radius: 20px 0 0 20px;
 }
 
-#start-button {
+#help-button {
   grid-row: 3/4;
 }
 
-#restart-button {
+#start-button {
   grid-row: 4/5;
+}
+
+#restart-button {
+  grid-row: 5/6;
 }
 
 .player-hand-controls {
@@ -345,11 +367,16 @@ button:disabled {
   body {
     max-width: 1000px;
     max-height: 600px;
+    background-size: 120%;
   }
 
   #game-space {
     max-width: 1000px;
     max-height: 400px;
+  }
+
+  .char-area {
+    height: 400px;
   }
 
   .play-text {
@@ -455,7 +482,7 @@ button:disabled {
 
 .inactive-card {
   border-color: rgba(0, 0, 0, 0);
-  background-color: rgba(100, 100, 100, 0.2);
+  background-color: rgba(100, 100, 100, 0.5);
   color: rgba(0, 0, 0, 0);
   background-image: none;
   cursor: context-menu;

@@ -42,6 +42,8 @@ const playedValue = document.querySelector("#played-value");
 const computerValue = document.querySelector("#computer-value");
 const playerTurn = document.querySelector("#player-turn");
 const computerTurn = document.querySelector("#computer-turn");
+const playedMove = document.querySelector("#played-move");
+const computerMove = document.querySelector("#computer-move");
 const versus = document.querySelector("#versus");
 const difficultyText = document.querySelector("#difficulty");
 const helpText = document.querySelector("#help-text");
@@ -66,7 +68,7 @@ function initialize() {
   computerPlayer.initialize();
   playerImg.src = playerImgDir + "V1-attackprepare.png";
   computerImg.src = computerImgDir + "V1.png";
-  if (playerTurn.classList.contains("block-text")) {
+  if (playedMove.classList.contains("block-text")) {
     swapTurn();
   }
 }
@@ -710,19 +712,19 @@ function swapTurn() {
   const tempTurn = playerTurn.innerText;
   playerTurn.innerText = computerTurn.innerText;
   computerTurn.innerText = tempTurn;
-  if (playerTurn.classList.contains("damage-text")) {
-    playerTurn.classList.remove("damage-text");
-    playerTurn.classList.add("block-text");
+  if (playedMove.classList.contains("damage-text")) {
+    playedMove.classList.remove("damage-text");
+    playedMove.classList.add("block-text");
   } else {
-    playerTurn.classList.remove("block-text");
-    playerTurn.classList.add("damage-text");
+    playedMove.classList.remove("block-text");
+    playedMove.classList.add("damage-text");
   }
-  if (computerTurn.classList.contains("block-text")) {
-    computerTurn.classList.remove("block-text");
-    computerTurn.classList.add("damage-text");
+  if (computerMove.classList.contains("block-text")) {
+    computerMove.classList.remove("block-text");
+    computerMove.classList.add("damage-text");
   } else {
-    computerTurn.classList.remove("damage-text");
-    computerTurn.classList.add("block-text");
+    computerMove.classList.remove("damage-text");
+    computerMove.classList.add("block-text");
   }
 }
 
@@ -747,8 +749,10 @@ function gameWin(winCheck) {
   versus.classList.add("inactive-info");
   playedValue.classList.add("inactive-info");
   playerTurn.classList.add("inactive-info");
+  playedMove.classList.add("inactive-info");
   computerValue.classList.add("inactive-info");
   computerTurn.classList.add("inactive-info");
+  computerMove.classList.add("inactive-info");
   // Disable menu buttons.
   acceptButton.disabled = true;
   sortButton.disabled = true;
@@ -829,8 +833,10 @@ function startGame() {
     versus.classList.remove("inactive-info");
     playedValue.classList.remove("inactive-info");
     playerTurn.classList.remove("inactive-info");
+    playedMove.classList.remove("inactive-info");
     computerValue.classList.remove("inactive-info");
     computerTurn.classList.remove("inactive-info");
+    computerMove.classList.remove("inactive-info");
     battleText.innerText = "You have the first attack!";
     playedValue.innerText = 0;
     // Roll value for computer move.
@@ -855,8 +861,10 @@ function confirmRestart() {
     versus.classList.add("inactive-info");
     playedValue.classList.add("inactive-info");
     playerTurn.classList.add("inactive-info");
+    playedMove.classList.add("inactive-info");
     computerValue.classList.add("inactive-info");
     computerTurn.classList.add("inactive-info");
+    computerMove.classList.add("inactive-info");
   } else {
     // Otherwise, re-initialize game.
     startGame();
@@ -876,8 +884,10 @@ function cancelRestart() {
     versus.classList.remove("inactive-info");
     playedValue.classList.remove("inactive-info");
     playerTurn.classList.remove("inactive-info");
+    playedMove.classList.remove("inactive-info");
     computerValue.classList.remove("inactive-info");
     computerTurn.classList.remove("inactive-info");
+    computerMove.classList.remove("inactive-info");
   }
 }
 

@@ -10,7 +10,6 @@
   <body>
     <div id="game-space">
       <div id="help-section">
-        <button id="help-button">Help</button>
         <div class="help-hide" id="help-text">
           How to play:
           <ul>
@@ -97,18 +96,14 @@
           <button class="difficulty-button" id="easy-button">Easy</button>
           <button class="difficulty-button" id="norm-button">Normal</button>
           <button class="difficulty-button" id="hard-button">Hard</button>
-          <div id="played-move">
+          <div class="inactive-info damage-text" id="played-move">
             <div class="inactive-info play-text" id="played-value"></div>
-            <div class="inactive-info play-text damage-text" id="player-turn">
-              Damage
-            </div>
+            <div class="inactive-info play-text" id="player-turn">Damage</div>
           </div>
           <div class="inactive-info" id="versus">VS</div>
-          <div id="computer-move">
+          <div class="inactive-info block-text" id="computer-move">
             <div class="inactive-info play-text" id="computer-value"></div>
-            <div class="inactive-info play-text block-text" id="computer-turn">
-              Block
-            </div>
+            <div class="inactive-info play-text" id="computer-turn">Block</div>
           </div>
         </div>
       </div>
@@ -129,6 +124,7 @@
     </div>
     <div class="player-controlled">
       <div class="game-state-controls">
+        <button class="game-state-button" id="help-button">Help</button>
         <button class="game-state-button" id="start-button">Start</button>
         <button class="game-state-button" id="restart-button" disabled>
           Restart
