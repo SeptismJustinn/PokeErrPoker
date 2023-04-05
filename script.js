@@ -33,6 +33,7 @@ const returnButton = document.querySelector("#return-move-button");
 const sortButton = document.querySelector("#sort-hand-button");
 const helpButton = document.querySelector("#help-button");
 const combinationButton = document.querySelector("#combination-button");
+const keyboardButton = document.querySelector("#controls-button");
 
 // - Texts -
 const damageInfo = document.querySelector("#damage-info");
@@ -45,6 +46,7 @@ const versus = document.querySelector("#versus");
 const difficultyText = document.querySelector("#difficulty");
 const helpText = document.querySelector("#help-text");
 const combinationText = document.querySelector("#combination-text");
+const keyboardText = document.querySelector("#keyboard-text");
 
 // - Card Areas -
 const playArea = document.querySelector("#play-area");
@@ -771,15 +773,18 @@ function gameWin(winCheck) {
 // --- Button Functions ---
 // Opens help menu or closes all help menus.
 function toggleHelp() {
-  helpText.classList.toggle("help-hide");
+  hideMenu(helpText);
   if (!combinationText.classList.contains("help-hide")) {
-    toggleComb();
+    hideMenu(combinationText);
+  }
+  if (!keyboardText.classList.contains("help-hide")) {
+    hideMenu(keyboardText);
   }
 }
 
-// Toggles display of card combination menu.
-function toggleComb() {
-  combinationText.classList.toggle("help-hide");
+// Toggles display of help menus.
+function hideMenu(ele) {
+  ele.classList.toggle("help-hide");
 }
 
 // Sets difficulty of the game, then removes the buttons. To attach to play area before 1st game.
@@ -845,40 +850,24 @@ function confirmRestart() {
     preRestartMessage = battleText.innerText;
     // Display confirmation message.
     battleText.innerText =
-      "Really restart?\n\nClick restart again to confirm or return to resume";
+      "Really restart?\n\nClick restart again to confirm or continue playing to resume";
     // Disables damage-info texts.
     versus.classList.add("inactive-info");
     playedValue.classList.add("inactive-info");
     playerTurn.classList.add("inactive-info");
     computerValue.classList.add("inactive-info");
     computerTurn.classList.add("inactive-info");
-    // Enable button in case it was still disabled.
-    returnButton.disabled = false;
-    // Remove default functionality of returnButton.
-    returnButton.removeEventListener("click", returnCard);
-    // Add new function to cancel restart.
-    returnButton.addEventListener("click", cancelRestart, { once: true });
   } else {
     // Otherwise, re-initialize game.
     startGame();
     // Reset restartConfirm switch.
     restartConfirm = false;
     preRestartMessage = "";
-    if (playElements.getCardsLength() < 1) {
-      // Disabled return button if no cards have been played, as it should be in this case.
-      returnButton.disabled = true;
-    }
-    // Remove cancelRestart function of return button so that it does not linger for the next game session.
-    returnButton.removeEventListener("click", cancelRestart);
-    // Restore normal return button functionality.
-    returnButton.addEventListener("click", returnCard);
   }
 }
 
-// Function called on return button click, after first restart button click.
+// Function called if restart button not clicked after first restart button click.
 function cancelRestart() {
-  // Restore original functionality
-  returnButton.addEventListener("click", returnCard);
   restartConfirm = false;
   // Restore battle-text and damage-info to pre-restart conditions.
   battleText.innerText = preRestartMessage;
@@ -890,14 +879,14 @@ function cancelRestart() {
     computerValue.classList.remove("inactive-info");
     computerTurn.classList.remove("inactive-info");
   }
-  if (playElements.getCardsLength() < 1) {
-    // Disabled return button if no cards have been played, as it should be in this case.
-    returnButton.disabled = true;
-  }
 }
 
 // Accept button function to progress to the next turn, based on let turn variable.
 function progressTurn() {
+  // Check that player has not clicked restart button without confirming or returning.
+  if (restartConfirm) {
+    cancelRestart();
+  }
   /* Disable acceptButton. Accept button is re-enabled after a short time during turns 0 and 2,
   allowing player to read the text. For turns 1 and 3, button remains disabled since playElements
   is cleared and should not be re-enabled without cards played.
@@ -1002,6 +991,10 @@ function progressTurn() {
 
 // Return button function to return all cards played.
 function returnCard() {
+  // Check that player has not clicked restart button without confirming or returning.
+  if (restartConfirm) {
+    cancelRestart();
+  }
   // Get array of indices of occupied play area slots.
   const occupiedPlay = playElements.getOccupiedInd();
   // Get array of indices of empty hand area slots.
@@ -1020,6 +1013,10 @@ function returnCard() {
 
 // Sort button function to sort player hand.
 function sortHand() {
+  // Check that player has not clicked restart button without confirming or returning.
+  if (restartConfirm) {
+    cancelRestart();
+  }
   handElements.sort();
 }
 
@@ -1029,6 +1026,10 @@ Each time card is moved into play area, push the card into filoQueue. If the car
 Pop filoQueue from end if return button is hit.
 */
 function dragStart(pointer) {
+  // Check that player has not clicked restart button without confirming or returning.
+  if (restartConfirm) {
+    cancelRestart();
+  }
   // Bind dragged element to dragged variable.
   if (
     pointer.target.classList.contains("inactive-card") ||
@@ -1044,7 +1045,6 @@ function dragStart(pointer) {
 
 // Function to drag card element from one card area to another.
 function dragDrop(pointer) {
-  pointer.preventDefault();
   // If card was dragged out of an area then returned to the exact same area, ignore the move.
   if (pointer.target === dragged || dragged === "") {
     return;
@@ -1124,6 +1124,10 @@ function cardChoose(pointer, mouse = true) {
     // If game is not in progress, do nothing. Prevents start menu clicks.
     return;
   }
+  // Check that player has not clicked restart button without confirming or returning.
+  if (restartConfirm) {
+    cancelRestart();
+  }
   let targetElement;
   if (mouse) {
     targetElement = pointer.target;
@@ -1185,7 +1189,8 @@ returnButton.addEventListener("click", returnCard);
 sortButton.addEventListener("click", sortHand);
 damageInfo.addEventListener("click", setDifficulty);
 helpButton.addEventListener("click", toggleHelp);
-combinationButton.addEventListener("click", toggleComb);
+combinationButton.addEventListener("click", () => hideMenu(combinationText));
+keyboardButton.addEventListener("click", () => hideMenu(keyboardText));
 
 // --- Card Listeners ---
 // - Play Area -

@@ -79,7 +79,8 @@ body {
 }
 
 #help-text,
-#combination-text {
+#combination-text,
+#keyboard-text {
   padding: 10px;
   height: fit-content;
   border: 2px solid black;
@@ -132,6 +133,18 @@ body {
 }
 
 #combination-text ol {
+  margin-block-start: 0.5em;
+  padding-inline-start: 1em;
+  margin-inline-start: 0;
+}
+
+#keyboard-text {
+  position: absolute;
+  width: 600px;
+  top: 50%;
+}
+
+#keyboard-text ul {
   margin-block-start: 0.5em;
   padding-inline-start: 1em;
   margin-inline-start: 0;
@@ -316,6 +329,7 @@ button:disabled {
 #player-hand {
   grid-column: 2/3;
   display: grid;
+  position: relative;
   grid-template-columns: repeat(10, 10%);
   justify-items: center;
   align-items: center;
