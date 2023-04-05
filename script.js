@@ -1041,11 +1041,13 @@ function dragStart(pointer) {
   }
   // Bind dragged element to dragged variable.
   if (
+    turn === 1 ||
+    turn === 3 ||
     pointer.target.classList.contains("inactive-card") ||
     (!pointer.target.classList.contains("play-area-card") &&
       !pointer.target.classList.contains("player-hand-card"))
   ) {
-    // Prevents dragging of inactive cards.
+    // Prevents dragging of inactive cards. Or dragging of cards between turns.
     // Also will not drag if element is not a play area card and not a player hand card.
     return;
   }
@@ -1128,7 +1130,7 @@ function keyboardPress(pressEvent) {
 
 // On card click or keyup, move card to available empty slots, ignore otherwise.
 function cardChoose(pointer, mouse = true) {
-  if (gameover) {
+  if (gameover || turn === 1 || turn === 3) {
     // If game is not in progress, do nothing. Prevents start menu clicks.
     return;
   }
