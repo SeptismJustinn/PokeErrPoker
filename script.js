@@ -917,8 +917,12 @@ function progressTurn() {
         battleText.innerText = `You attack for ${netMoveValue * -1} damage! ${
           turnMessages[1]
         }`;
+        // Change computer image to attacked.
+        computerImg.src = computerImgDir + "V1-attacked.png";
       } else {
         battleText.innerText = `Err shrugs off your attack! ${turnMessages[1]}`;
+        // Change computer image to defended.
+        computerImg.src = computerImgDir + "V1-defending.png";
       }
 
       setTimeout(() => {
@@ -936,8 +940,10 @@ function progressTurn() {
         // If game end, don't need to change innerText.
         return;
       } else {
-        // Change player image to prepare defence
+        // Change player image to prepare defence.
         playerImg.src = playerImgDir + "V1.png";
+        // Change compute rimage to prepare attack.
+        computerImg.src = computerImgDir + "V1-attackprepare.png";
         turn++;
         battleText.innerText = turnMessages[turn];
         // Update CPU move value and reset player move value.
@@ -957,8 +963,9 @@ function progressTurn() {
         Number(playedValue.innerText) - Number(computerValue.innerText);
       //Change player image to defending
       playerImg.src = playerImgDir + "V1-defending.png";
+      computerImg.src = computerImgDir + "V1-attacking.png";
       if (netMoveValue < 0) {
-        // If player does more damage than computer defence,
+        // If computer does more damage than player defence,
         humanPlayer.updateHealth(netMoveValue);
         battleText.innerText = `Err attacks for ${netMoveValue * -1} damage! ${
           turnMessages[1]
@@ -982,8 +989,10 @@ function progressTurn() {
         // If game end, don't need to change innerText.
         return;
       } else {
-        // Change player image to prepare defence
+        // Change player image to prepare defence.
         playerImg.src = playerImgDir + "V1-attackprepare.png";
+        // Change computer image to standby.
+        computerImg.src = computerImgDir + "V1.png";
         turn = 0;
         battleText.innerText = turnMessages[turn];
         // Update CPU move value and reset player move value.
