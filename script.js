@@ -238,7 +238,6 @@ class CardElements {
       // Convert number portion of card string and push to array.
       numberValues.push(Number(this.cards[i].slice(1)));
     }
-    console.log(allWild);
     // Sort in numerical order.
     numberValues.sort((first, second) => first - second);
     // Check if sequential.
@@ -1095,7 +1094,6 @@ function dragEnd() {
 // Keyup listener generates keyboard events, which store a K-V pair (key : character pressed)
 function keyboardPress(pressEvent) {
   // Check if numeric keys were pressed.
-  console.log(pressEvent);
   let numberChk = Number(pressEvent.key);
   if (Number.isNaN(numberChk) || pressEvent.key === " ") {
     // If not number or if space bar was pressed (since " " converts to 0)
