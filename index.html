@@ -5,12 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300&display=swap"
+      rel="stylesheet"
+    />
     <title>Poke Err</title>
   </head>
   <body>
     <div id="game-space">
       <div id="help-section">
-        <button id="help-button">Help</button>
         <div class="help-hide" id="help-text">
           How to play:
           <ul>
@@ -39,6 +44,7 @@
               moves!
             </li>
           </ul>
+          <button id="controls-button">Keyboard</button>
           <button id="combination-button">Check Combinations</button>
         </div>
         <div class="help-hide" id="combination-text">
@@ -96,18 +102,14 @@
           <button class="difficulty-button" id="easy-button">Easy</button>
           <button class="difficulty-button" id="norm-button">Normal</button>
           <button class="difficulty-button" id="hard-button">Hard</button>
-          <div id="played-move">
+          <div class="inactive-info damage-text" id="played-move">
             <div class="inactive-info play-text" id="played-value"></div>
-            <div class="inactive-info play-text damage-text" id="player-turn">
-              Damage
-            </div>
+            <div class="inactive-info play-text" id="player-turn">Damage</div>
           </div>
           <div class="inactive-info" id="versus">VS</div>
-          <div id="computer-move">
+          <div class="inactive-info block-text" id="computer-move">
             <div class="inactive-info play-text" id="computer-value"></div>
-            <div class="inactive-info play-text block-text" id="computer-turn">
-              Block
-            </div>
+            <div class="inactive-info play-text" id="computer-turn">Block</div>
           </div>
         </div>
       </div>
@@ -128,6 +130,7 @@
     </div>
     <div class="player-controlled">
       <div class="game-state-controls">
+        <button class="game-state-button" id="help-button">Help</button>
         <button class="game-state-button" id="start-button">Start</button>
         <button class="game-state-button" id="restart-button" disabled>
           Restart
@@ -144,6 +147,26 @@
         <div class="player-hand-card fire" id="card-eig">R</div>
         <div class="player-hand-card earth" id="card-nin">R</div>
         <div class="inactive-card player-hand-card" id="card-ten"></div>
+        <div class="help-hide" id="keyboard-text">
+          Keyboard Controls:
+          <ul>
+            <li>
+              Cards in hand correspond with numeric keys! Press
+              <span class="help-text-bold">1 to 0</span> to play cards.
+            </li>
+            <li>
+              Press <span class="help-text-bold">R</span> to return cards to
+              hand.
+            </li>
+            <li>
+              Press <span class="help-text-bold">S</span> to sort cards in hand.
+            </li>
+            <li>
+              Press <span class="help-text-bold">Spacebar</span> when you have 5
+              cards to play your hand.
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="player-hand-controls">
         <button class="player-hand-button" id="accept-move-button" disabled>

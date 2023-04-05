@@ -33,6 +33,7 @@ const returnButton = document.querySelector("#return-move-button");
 const sortButton = document.querySelector("#sort-hand-button");
 const helpButton = document.querySelector("#help-button");
 const combinationButton = document.querySelector("#combination-button");
+const keyboardButton = document.querySelector("#controls-button");
 
 // - Texts -
 const damageInfo = document.querySelector("#damage-info");
@@ -41,10 +42,13 @@ const playedValue = document.querySelector("#played-value");
 const computerValue = document.querySelector("#computer-value");
 const playerTurn = document.querySelector("#player-turn");
 const computerTurn = document.querySelector("#computer-turn");
+const playedMove = document.querySelector("#played-move");
+const computerMove = document.querySelector("#computer-move");
 const versus = document.querySelector("#versus");
 const difficultyText = document.querySelector("#difficulty");
 const helpText = document.querySelector("#help-text");
 const combinationText = document.querySelector("#combination-text");
+const keyboardText = document.querySelector("#keyboard-text");
 
 // - Card Areas -
 const playArea = document.querySelector("#play-area");
@@ -64,7 +68,7 @@ function initialize() {
   computerPlayer.initialize();
   playerImg.src = playerImgDir + "V1-attackprepare.png";
   computerImg.src = computerImgDir + "V1.png";
-  if (playerTurn.classList.contains("block-text")) {
+  if (playedMove.classList.contains("block-text")) {
     swapTurn();
   }
 }
@@ -234,7 +238,6 @@ class CardElements {
       // Convert number portion of card string and push to array.
       numberValues.push(Number(this.cards[i].slice(1)));
     }
-    console.log(allWild);
     // Sort in numerical order.
     numberValues.sort((first, second) => first - second);
     // Check if sequential.
@@ -708,19 +711,19 @@ function swapTurn() {
   const tempTurn = playerTurn.innerText;
   playerTurn.innerText = computerTurn.innerText;
   computerTurn.innerText = tempTurn;
-  if (playerTurn.classList.contains("damage-text")) {
-    playerTurn.classList.remove("damage-text");
-    playerTurn.classList.add("block-text");
+  if (playedMove.classList.contains("damage-text")) {
+    playedMove.classList.remove("damage-text");
+    playedMove.classList.add("block-text");
   } else {
-    playerTurn.classList.remove("block-text");
-    playerTurn.classList.add("damage-text");
+    playedMove.classList.remove("block-text");
+    playedMove.classList.add("damage-text");
   }
-  if (computerTurn.classList.contains("block-text")) {
-    computerTurn.classList.remove("block-text");
-    computerTurn.classList.add("damage-text");
+  if (computerMove.classList.contains("block-text")) {
+    computerMove.classList.remove("block-text");
+    computerMove.classList.add("damage-text");
   } else {
-    computerTurn.classList.remove("damage-text");
-    computerTurn.classList.add("block-text");
+    computerMove.classList.remove("damage-text");
+    computerMove.classList.add("block-text");
   }
 }
 
@@ -745,8 +748,10 @@ function gameWin(winCheck) {
   versus.classList.add("inactive-info");
   playedValue.classList.add("inactive-info");
   playerTurn.classList.add("inactive-info");
+  playedMove.classList.add("inactive-info");
   computerValue.classList.add("inactive-info");
   computerTurn.classList.add("inactive-info");
+  computerMove.classList.add("inactive-info");
   // Disable menu buttons.
   acceptButton.disabled = true;
   sortButton.disabled = true;
@@ -771,15 +776,18 @@ function gameWin(winCheck) {
 // --- Button Functions ---
 // Opens help menu or closes all help menus.
 function toggleHelp() {
-  helpText.classList.toggle("help-hide");
+  hideMenu(helpText);
   if (!combinationText.classList.contains("help-hide")) {
-    toggleComb();
+    hideMenu(combinationText);
+  }
+  if (!keyboardText.classList.contains("help-hide")) {
+    hideMenu(keyboardText);
   }
 }
 
-// Toggles display of card combination menu.
-function toggleComb() {
-  combinationText.classList.toggle("help-hide");
+// Toggles display of help menus.
+function hideMenu(ele) {
+  ele.classList.toggle("help-hide");
 }
 
 // Sets difficulty of the game, then removes the buttons. To attach to play area before 1st game.
@@ -824,8 +832,10 @@ function startGame() {
     versus.classList.remove("inactive-info");
     playedValue.classList.remove("inactive-info");
     playerTurn.classList.remove("inactive-info");
+    playedMove.classList.remove("inactive-info");
     computerValue.classList.remove("inactive-info");
     computerTurn.classList.remove("inactive-info");
+    computerMove.classList.remove("inactive-info");
     battleText.innerText = "You have the first attack!";
     playedValue.innerText = 0;
     // Roll value for computer move.
@@ -845,40 +855,26 @@ function confirmRestart() {
     preRestartMessage = battleText.innerText;
     // Display confirmation message.
     battleText.innerText =
-      "Really restart?\n\nClick restart again to confirm or return to resume";
+      "Really restart?\n\nClick restart again to confirm or continue playing to resume";
     // Disables damage-info texts.
     versus.classList.add("inactive-info");
     playedValue.classList.add("inactive-info");
     playerTurn.classList.add("inactive-info");
+    playedMove.classList.add("inactive-info");
     computerValue.classList.add("inactive-info");
     computerTurn.classList.add("inactive-info");
-    // Enable button in case it was still disabled.
-    returnButton.disabled = false;
-    // Remove default functionality of returnButton.
-    returnButton.removeEventListener("click", returnCard);
-    // Add new function to cancel restart.
-    returnButton.addEventListener("click", cancelRestart, { once: true });
+    computerMove.classList.add("inactive-info");
   } else {
     // Otherwise, re-initialize game.
     startGame();
     // Reset restartConfirm switch.
     restartConfirm = false;
     preRestartMessage = "";
-    if (playElements.getCardsLength() < 1) {
-      // Disabled return button if no cards have been played, as it should be in this case.
-      returnButton.disabled = true;
-    }
-    // Remove cancelRestart function of return button so that it does not linger for the next game session.
-    returnButton.removeEventListener("click", cancelRestart);
-    // Restore normal return button functionality.
-    returnButton.addEventListener("click", returnCard);
   }
 }
 
-// Function called on return button click, after first restart button click.
+// Function called if restart button not clicked after first restart button click.
 function cancelRestart() {
-  // Restore original functionality
-  returnButton.addEventListener("click", returnCard);
   restartConfirm = false;
   // Restore battle-text and damage-info to pre-restart conditions.
   battleText.innerText = preRestartMessage;
@@ -887,17 +883,19 @@ function cancelRestart() {
     versus.classList.remove("inactive-info");
     playedValue.classList.remove("inactive-info");
     playerTurn.classList.remove("inactive-info");
+    playedMove.classList.remove("inactive-info");
     computerValue.classList.remove("inactive-info");
     computerTurn.classList.remove("inactive-info");
-  }
-  if (playElements.getCardsLength() < 1) {
-    // Disabled return button if no cards have been played, as it should be in this case.
-    returnButton.disabled = true;
+    computerMove.classList.remove("inactive-info");
   }
 }
 
 // Accept button function to progress to the next turn, based on let turn variable.
 function progressTurn() {
+  // Check that player has not clicked restart button without confirming or returning.
+  if (restartConfirm) {
+    cancelRestart();
+  }
   /* Disable acceptButton. Accept button is re-enabled after a short time during turns 0 and 2,
   allowing player to read the text. For turns 1 and 3, button remains disabled since playElements
   is cleared and should not be re-enabled without cards played.
@@ -1002,6 +1000,10 @@ function progressTurn() {
 
 // Return button function to return all cards played.
 function returnCard() {
+  // Check that player has not clicked restart button without confirming or returning.
+  if (restartConfirm) {
+    cancelRestart();
+  }
   // Get array of indices of occupied play area slots.
   const occupiedPlay = playElements.getOccupiedInd();
   // Get array of indices of empty hand area slots.
@@ -1020,6 +1022,10 @@ function returnCard() {
 
 // Sort button function to sort player hand.
 function sortHand() {
+  // Check that player has not clicked restart button without confirming or returning.
+  if (restartConfirm) {
+    cancelRestart();
+  }
   handElements.sort();
 }
 
@@ -1029,6 +1035,10 @@ Each time card is moved into play area, push the card into filoQueue. If the car
 Pop filoQueue from end if return button is hit.
 */
 function dragStart(pointer) {
+  // Check that player has not clicked restart button without confirming or returning.
+  if (restartConfirm) {
+    cancelRestart();
+  }
   // Bind dragged element to dragged variable.
   if (
     pointer.target.classList.contains("inactive-card") ||
@@ -1044,7 +1054,6 @@ function dragStart(pointer) {
 
 // Function to drag card element from one card area to another.
 function dragDrop(pointer) {
-  pointer.preventDefault();
   // If card was dragged out of an area then returned to the exact same area, ignore the move.
   if (pointer.target === dragged || dragged === "") {
     return;
@@ -1082,36 +1091,82 @@ function dragEnd() {
   dragged = "";
 }
 
-// On card click, move card to available empty slots, ignore otherwise.
-function cardClick(pointer) {
+// Keyup listener generates keyboard events, which store a K-V pair (key : character pressed)
+function keyboardPress(pressEvent) {
+  // Check if numeric keys were pressed.
+  let numberChk = Number(pressEvent.key);
+  if (Number.isNaN(numberChk) || pressEvent.key === " ") {
+    // If not number or if space bar was pressed (since " " converts to 0)
+    switch (pressEvent.key) {
+      case " ":
+        // Spacebar to accept move, if allowed to.
+        if (acceptButton.disabled === false) {
+          progressTurn();
+        }
+        break;
+      case "s":
+        // s key to sort hand.
+        sortHand();
+        break;
+      case "r":
+        // r key to return hand.
+        if (returnButton.disabled === false) {
+          returnCard();
+        }
+        break;
+    }
+  } else {
+    // Prepare numberChk to be used as an array index (from keyboard's 1-0 to array's 0-9)
+    if (numberChk === 0) {
+      numberChk = 9;
+    } else {
+      numberChk--;
+    }
+    cardChoose(handElements.cardEleAt(numberChk), false);
+  }
+}
+
+// On card click or keyup, move card to available empty slots, ignore otherwise.
+function cardChoose(pointer, mouse = true) {
   if (gameover) {
     // If game is not in progress, do nothing. Prevents start menu clicks.
     return;
   }
-  const targetList = pointer.target.classList;
+  // Check that player has not clicked restart button without confirming or returning.
+  if (restartConfirm) {
+    cancelRestart();
+  }
+  let targetElement;
+  if (mouse) {
+    targetElement = pointer.target;
+  } else {
+    targetElement = pointer;
+  }
+  const targetList = targetElement.classList;
   if (targetList.contains("inactive-card")) {
     // Ignore move if inactive card clicked.
     return;
   } else if (targetList.contains("player-hand-card")) {
-    // If player hand card is clicked, check for empty spaces in play area.
+    // If player hand card is clicked or keypress, check for empty spaces in play area.
     const targetIndices = playElements.getEmptyInd();
     if (targetIndices.length === 0) {
       // If no empty spaces, ignore the click.
       return;
     }
     CardElements.transferCard(
-      pointer.target,
+      targetElement,
       playElements.cardEleAt(targetIndices[0])
     );
   } else if (targetList.contains("play-area-card")) {
     // If play area card is clicked, return to first empty space from the left.
+    // This part of the code should not run on keypress.
     const targetIndices = handElements.getEmptyInd();
     if (targetIndices.length === 0) {
       // If no empty spaces, ignore the click.
       return;
     }
     CardElements.transferCard(
-      pointer.target,
+      targetElement,
       handElements.cardEleAt(targetIndices[0])
     );
   }
@@ -1142,7 +1197,8 @@ returnButton.addEventListener("click", returnCard);
 sortButton.addEventListener("click", sortHand);
 damageInfo.addEventListener("click", setDifficulty);
 helpButton.addEventListener("click", toggleHelp);
-combinationButton.addEventListener("click", toggleComb);
+combinationButton.addEventListener("click", () => hideMenu(combinationText));
+keyboardButton.addEventListener("click", () => hideMenu(keyboardText));
 
 // --- Card Listeners ---
 // - Play Area -
@@ -1152,7 +1208,7 @@ playArea.addEventListener("dragover", (pointer) => {
 });
 playArea.addEventListener("drop", dragDrop);
 playArea.addEventListener("dragend", dragEnd);
-playArea.addEventListener("click", cardClick);
+playArea.addEventListener("click", cardChoose);
 
 // - Player Hand Area -
 handArea.addEventListener("dragstart", dragStart);
@@ -1161,7 +1217,10 @@ handArea.addEventListener("dragover", (pointer) => {
 });
 handArea.addEventListener("drop", dragDrop);
 handArea.addEventListener("dragend", dragEnd);
-handArea.addEventListener("click", cardClick);
+handArea.addEventListener("click", cardChoose);
+
+// - Keyboard -
+document.addEventListener("keyup", keyboardPress);
 
 //#region ----- Debug Functions -----
 function generateRF(char = "e") {
