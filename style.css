@@ -180,7 +180,8 @@ body {
 }
 
 .difficulty-button {
-  z-index: 2;
+  position: relative;
+  z-index: -1;
   grid-row: 1/2;
   font-size: 20px;
 }
@@ -386,6 +387,32 @@ button:disabled {
   #game-space {
     max-width: 1000px;
     max-height: 400px;
+  }
+
+  #help-text,
+  #combination-text,
+  #keyboard-text {
+    font-size: 12px;
+    padding: 5px;
+  }
+
+  #help-text ul {
+    list-style-position: inside;
+    margin-block-start: 0.5em;
+    padding-inline-start: 0.5em;
+    margin-inline-start: 0;
+  }
+
+  #combination-text ol {
+    margin-block-start: 0.5em;
+    padding-inline-start: 1em;
+    margin-inline-start: 0.1em;
+  }
+
+  #keyboard-text ul {
+    margin-block-start: 0.5em;
+    padding-inline-start: 1em;
+    margin-inline-start: 0.5em;
   }
 
   .char-area {
