@@ -1,4 +1,4 @@
-# PokeErrPoker - https://septismjustinn.github.io/PokeErrPoker/
+# <a href="https://septismjustinn.github.io/PokeErrPoker/" target="_blank">PokeErrPoker</a>
 
 ## Concept
 
@@ -24,10 +24,29 @@ A CSS was used to shape and position the HTML elements. Class-specific styling w
 
 ### JavaScript
 
-A script was written in JavaScript to provide game logic, randomizing the cards to compromise the player's hand and functions to update
+A script was written in JavaScript to provide game logic, randomizing the cards to compromise the player's hand and randomizing the computer's moves. This was done through extensive use of JavaScript's built-in Math.random function and transformation of the generated number.
+
+To capture player's input (Mouse clicks, mouse drags and keyboard presses), event listeners had to be utilized to watch out for inputs and react accordingly, ensuring that containers in the script tallied with elements on the player's screen and proceeding with the game when appropriate elements were interacted with.
+
+## Approach
+
+I started off with the page layout in HTML, creating grids and bordered div elements to create the game space as I had [envisioned](#sources-of-inspiration), lightly touching up the stylesheet to give the barebones page a stomachable aesthetic to look at during early development.
+
+I then moved on to the script, where the bulk of my time was spent weaving the [game concept](#concept) into code, the game logic bound by classes and run by functions. I implemented each portion of the game sequentially; Each time a new function or feature was introduced, I stress tested my code to check if anything had broken or if it had interacted with an undesired part of my program.
+
+Only once the game was mostly functional did I then start focusing on styling my HTML elements since at that point, I had added almost all of the elements I would have needed for the game.
+
+## Sources of inspiration
+
+<a href="https://store.steampowered.com/app/646570/Slay_the_Spire/" target="_blank">Slay the Spire by Mega Crit Games</a>
+
+Initial concept, captured in Slay the Spire.
+![Game concept captured in Slay the Spire](Concept.png "Game concept captured in Slay the Spire")
+
+<a href="https://en.wikipedia.org/wiki/List_of_poker_hands" target="_blank">Poker</a>
 
 ## Challenges
 
-In order to make the game take up as much space on the page as possible to facilitate visibility of elements, a major hurdle encountered was to account for varying screen sizes.
+- Due to the interactability of the many HTML elements in the page, one big challenge was to identify as many cases of elements interacting with each other as possible and from these cases, weed out unsavoury interactions. Cards being dragged into buttons, text being dragged into the cards and deleting the grid, buttons being clicked when they were not supposed to were few of several bugs that occurred during development. Everytime a new feature was added, the game had to go through intensive stress testing to see if a user could break the game in as many ways as could be thought of.
 
-Due to the interactability of the many HTML elements in the page, another big challenge was to discover and test for every case of elements being clicked or dragged and to ensure that correct elements were being interacted with and the correct output was obtained.
+- Another challenge was to make the game comfortable visible across screens of different sizes. As different monitors were used to view the page throughout development, the game would be cut off at inconvenient portions of the page. This led to development having to be conducted while alternating between devices of different screen resolutions to ensure that the game and page was properly visible on each device.
